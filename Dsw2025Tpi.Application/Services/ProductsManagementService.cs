@@ -46,5 +46,61 @@ namespace Dsw2025Tpi.Application.Services
             return await _repository.GetById<Product>(id);
         }
 
+        public async Task<ProductModel.Response> Update(Guid Id, ProductModel.Request request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Sku) ||
+         string.IsNullOrWhiteSpace(request.Name) ||
+         request.CurrentPrice < 0)
+            {
+                throw new ArgumentException("Los datos enviados no son válidos.");
+            }
+
+            var product = await _repository.GetById<Product>(Id);
+            if (product == null)
+            {
+                return null; // No se encontró el producto
+            }
+
+            // Actualizar propiedades manualmente
+            product.Sku = request.Sku;
+            product.Name = request.Name;
+            product.InternalCode = request.internalCode;
+            product.Description = request.Description;
+            product.CurrentPrice = request.CurrentPrice;
+            product.StockQuantity = request.StockQuantity;
+
+            await _repository.Update(product);
+
+            return new ProductModel.Response(
+                product.Sku,
+                product.Name,
+                product.InternalCode,
+                product.Description,
+                product.CurrentPrice,
+                product.StockQuantity
+            );
+
+
+        }
+        public async Task<bool> DisableProduct(Guid id)
+        {
+            // Paso 1: buscar el producto
+            var product = await _repository.GetById<Product>(id);
+            if (product == null)
+                return false;
+
+            // Paso 2: desactivar el producto
+            product.IsActive = false; // este método cambia IsActive = false
+
+            // Paso 3: guardar cambios
+            await _repository.Update(product);
+
+            return true;
+        }
+
+
+
+
+
     }
 }
