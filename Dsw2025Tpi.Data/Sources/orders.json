@@ -1,0 +1,44 @@
+[
+    {
+        "Id": "c5a16603-8f3d-4918-9634-006c2c94f03f",
+        "Date": "2025-06-21T00:00:00",
+        "ShipingAddress": "Av. Siempre Viva 101",
+        "BillingAddress": "Av. Siempre Viva 101",
+        "Notes": "Notas para la orden 1",
+        "TotalAmount": 427.5,
+        "Status": 2,
+        "CustomerId": "583a8009-5ac6-4efa-8f95-75cf0fed09e1",
+        "Items": [
+            "a43e6d89-7cc6-4847-bda4-d581e49db432",
+            "62bf2edf-cfa7-4b77-b1c5-005bb0e2f932"
+        ]
+    },
+    {
+        "Id": "3672f185-ad2b-4c9b-b956-e83c595de346",
+        "Date": "2025-06-22T00:00:00",
+        "ShipingAddress": "Av. Siempre Viva 102",
+        "BillingAddress": "Av. Siempre Viva 102",
+        "Notes": "Notas para la orden 2",
+        "TotalAmount": 351.0,
+        "Status": 3,
+        "CustomerId": "61fc4036-f30c-4b6b-b742-a34e61de1ebd",
+        "Items": [
+            "a4ac74c4-b7c6-4a18-8482-7ef9b8a0c212",
+            "cf03e549-3410-4711-a2e7-f0b4cd1f7eca"
+        ]
+    },
+    {
+        "Id": "b709ec04-fee0-4593-8250-00e35f4e886a",
+        "Date": "2025-06-23T00:00:00",
+        "ShipingAddress": "Av. Siempre Viva 103",
+        "BillingAddress": "Av. Siempre Viva 103",
+        "Notes": "Notas para la orden 3",
+        "TotalAmount": 351.0,
+        "Status": 4,
+        "CustomerId": "34981a72-68fa-4c83-a50e-7a3e37a86d9c",
+        "Items": [
+            "a53f635b-82cb-49fd-b632-f6613dc4e223",
+            "435ac662-18ae-484b-bf61-ac9186103aca"
+        ]
+    }
+]
