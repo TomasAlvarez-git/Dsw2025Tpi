@@ -16,11 +16,15 @@ namespace Dsw2025Tpi.Domain.Entities
         public Guid OrderID { get; set; }
 
         public Guid ProductID { get; set; }
-        public OrderItem(int quantity, decimal unitPrice)
+
+        public OrderItem() { } 
+        public OrderItem(Guid productId, int quantity, decimal unitPrice)
         {
+            ProductID = productId;
             Quantity = quantity;
             UnitPrice = unitPrice;
         }
+
     }
 
 }

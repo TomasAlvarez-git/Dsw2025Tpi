@@ -13,6 +13,10 @@ namespace Dsw2025Tpi.Domain.Entities
         public string? Phone { get; set; }
 
         public ICollection<Order> Orders { get;} = new HashSet<Order>();
+        
+        public Customer()
+        {
+        }
         public Customer(string email, string name, string phone)
         {
             Email = email;

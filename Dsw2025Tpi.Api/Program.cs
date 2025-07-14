@@ -35,6 +35,7 @@ public class Program
         });
         builder.Services.AddScoped<IRepository, EfRepository>();
         builder.Services.AddTransient<ProductsManagementService>();
+        builder.Services.AddTransient<OrdersManagementService>();
 
         var app = builder.Build();
 

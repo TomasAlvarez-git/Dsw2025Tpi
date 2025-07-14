@@ -22,6 +22,7 @@ namespace Dsw2025Tpi.Domain.Entities
 
         public ICollection<OrderItem> OrderItems { get; } = new HashSet<OrderItem>();
 
+        public Product() { }
         public Product(string sku, string internalCode, string name, string description, decimal currentPrice, int stockQuantity)
         {
             Sku = sku;

@@ -30,7 +30,7 @@ public class Dsw2025TpiContext : DbContext
         {
             o.HasKey(o => o.Id);
             o.Property(o => o.Date).IsRequired();
-            o.Property(o => o.ShipingAddress).IsRequired().HasMaxLength(200);
+            o.Property(o => o.ShippingAddress).IsRequired().HasMaxLength(200);
             o.Property(o => o.BillingAddress).IsRequired().HasMaxLength(200);
             o.Property(o => o.Notes).HasMaxLength(500);
             o.Property(o => o.TotalAmount).IsRequired().HasPrecision(15, 2);
