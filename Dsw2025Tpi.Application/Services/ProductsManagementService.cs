@@ -33,7 +33,7 @@ namespace Dsw2025Tpi.Application.Services
 
             var product = new Product(request.Sku, request.Name, request.InternalCode, request.Description, request.CurrentPrice, request.StockQuantity);
             await _repository.Add(product);
-            return new ProductModel.Response(product.Sku, product.Name, product.InternalCode, product.Description, product.CurrentPrice, product.StockQuantity);
+            return new ProductModel.Response(product.Sku, product.Name, product.InternalCode, product.Description, product.CurrentPrice, product.StockQuantity, product.IsActive);
         }
 
         public async Task<IEnumerable<Product>?> GetProducts()
@@ -77,7 +77,8 @@ namespace Dsw2025Tpi.Application.Services
                 product.InternalCode,
                 product.Description,
                 product.CurrentPrice,
-                product.StockQuantity
+                product.StockQuantity,
+                product.IsActive
             );
 
 

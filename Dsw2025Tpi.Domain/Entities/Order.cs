@@ -12,15 +12,14 @@ namespace Dsw2025Tpi.Domain.Entities
         public string? ShippingAddress { get; set; }
         public string? BillingAddress { get; set; }
         public string? Notes { get; set; }
-
-        public decimal TotalAmount { get; set; } = Items.Count > 0 ? Items.Sum(item => item.Subtotal) : 0;
-
-
+        public decimal TotalAmount { get;}
         public OrderStatus Status { get; set; } 
 
         public ICollection<OrderItem> Items { get; set; } = new HashSet<OrderItem>();
 
         public Guid? CustomerId { get; set; }
+
+        public Customer? Customer { get; set; } // Navigation property
 
         public Order() { } 
         public Order(Guid Customerid, string shippingAddress, string billingAddress, ICollection<OrderItem> items)

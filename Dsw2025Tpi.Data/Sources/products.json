@@ -1,32 +1,22 @@
 [
-    {
-        "Id": "8ac96912-66e9-46ad-94b5-45bdbe0f9610",
-        "Sku": "SKU001",
-        "InternalCode": "INT001",
-        "Name": "Producto 1",
-        "Description": "Descripción del producto 1",
-        "CurrentPrice": 125.5,
-        "StockQuantity": 15,
-        "IsActive": true
-    },
-    {
-        "Id": "9eb345e2-69bd-4f49-9f0a-7c7f98621687",
-        "Sku": "SKU002",
-        "InternalCode": "INT002",
-        "Name": "Producto 2",
-        "Description": "Descripción del producto 2",
-        "CurrentPrice": 151.0,
-        "StockQuantity": 20,
-        "IsActive": true
-    },
-    {
-        "Id": "edd3bbb1-7026-4fa3-b9ef-c24b62528a06",
-        "Sku": "SKU003",
-        "InternalCode": "INT003",
-        "Name": "Producto 3",
-        "Description": "Descripción del producto 3",
-        "CurrentPrice": 176.5,
-        "StockQuantity": 25,
-        "IsActive": true
-    }
+  {
+    "Id": "p1a2b3c4-d5e6-7f8g-9h0i-1234567890ab",
+    "Sku": "SKU001",
+    "InternalCode": "INT001",
+    "Name": "Producto A",
+    "Description": "Descripción del Producto A",
+    "CurrentPrice": 100.00,
+    "StockQuantity": 50,
+    "IsActive": true
+  },
+  {
+    "Id": "p2b3c4d5-e6f7-8g9h-0i1j-2345678901bc",
+    "Sku": "SKU002",
+    "InternalCode": "INT002",
+    "Name": "Producto B",
+    "Description": "Descripción del Producto B",
+    "CurrentPrice": 200.00,
+    "StockQuantity": 30,
+    "IsActive": true
+  }
 ]

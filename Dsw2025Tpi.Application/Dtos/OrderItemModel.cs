@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dsw2025Tpi.Application.Dtos
 {
-    public class OrderItemModel
+    public record OrderItemModel
     {
         public record Request(
         Guid ProductId,
@@ -18,10 +18,11 @@ namespace Dsw2025Tpi.Application.Dtos
 
         public record Response(
         Guid ProductId,
-        string Name,
-        decimal UnitPrice,
-        int Quantity,
-        decimal Subtotal
+        string? Name,
+        string? Description,
+        decimal? UnitPrice,
+        int? Quantity,
+        decimal? Subtotal
         );
     }
 }

@@ -1,20 +1,14 @@
 [
-    {
-        "Id": "583a8009-5ac6-4efa-8f95-75cf0fed09e1",
-        "Email": "cliente1@correo.com",
-        "Name": "Cliente 1",
-        "Phone": "381100001"
-    },
-    {
-        "Id": "61fc4036-f30c-4b6b-b742-a34e61de1ebd",
-        "Email": "cliente2@correo.com",
-        "Name": "Cliente 2",
-        "Phone": "381100002"
-    },
-    {
-        "Id": "34981a72-68fa-4c83-a50e-7a3e37a86d9c",
-        "Email": "cliente3@correo.com",
-        "Name": "Cliente 3",
-        "Phone": "381100003"
-    }
+  {
+    "Id": "15f459ed-0f1b-42fd-abb8-4054ef919bb7",
+    "Name": "Juan Pérez",
+    "Email": "juan.perez@example.com",
+    "Phone": "1234567890"
+  },
+  {
+    "Id": "26ccd3d2-200b-438a-8eee-33e3d6ed559b",
+    "Name": "María Gómez",
+    "Email": "maria.gomez@example.com",
+    "Phone": "0987654321"
+  }
 ]

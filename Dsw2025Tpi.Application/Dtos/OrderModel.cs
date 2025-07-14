@@ -19,11 +19,11 @@ namespace Dsw2025Tpi.Application.Dtos
         public record Response(
         Guid Id,
         Guid CustomerId,
-        string ShippingAddress,
-        string BillingAddress,
+        string? ShippingAddress,
+        string? BillingAddress,
         DateTime Date,
-        decimal TotalAmount,
-        string Status,
+        decimal? TotalAmount,
+        string? Status,
         List<OrderItemModel.Response> OrderItems
         );
     }
