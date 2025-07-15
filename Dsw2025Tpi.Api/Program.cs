@@ -30,7 +30,7 @@ public class Program
                 ((Dsw2025TpiContext)c).Seedwork<Customer>("Sources\\customers.json");
                 ((Dsw2025TpiContext)c).Seedwork<Product>("Sources\\products.json");
                 ((Dsw2025TpiContext)c).Seedwork<Order>("Sources\\orders.json");
-                //((Dsw2025TpiContext)c).Seedwork<OrderItem>("Sources\\orderitems.json");
+                ((Dsw2025TpiContext)c).Seedwork<OrderItem>("Sources\\orderitems.json");
             });
         });
         builder.Services.AddScoped<IRepository, EfRepository>();

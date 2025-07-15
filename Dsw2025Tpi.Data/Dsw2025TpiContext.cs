@@ -33,10 +33,6 @@ public class Dsw2025TpiContext : DbContext
                 .WithMany(c => c.Orders)
                 .HasForeignKey(o => o.CustomerId)
                 .OnDelete(DeleteBehavior.SetNull);
-            o.HasMany(o => o.Items)
-                .WithOne(oi => oi.Order)
-                .HasForeignKey(oi => oi.OrderId)
-                .OnDelete(DeleteBehavior.Cascade);
             o.Property(o => o.Date).IsRequired();
             o.Property(o => o.ShippingAddress).IsRequired().HasMaxLength(200);
             o.Property(o => o.BillingAddress).IsRequired().HasMaxLength(200);
@@ -48,6 +44,10 @@ public class Dsw2025TpiContext : DbContext
         modelBuilder.Entity<OrderItem>(oi =>
         {
             oi.HasKey(oi => oi.Id);
+            oi.HasOne(oi => oi.Order)
+                .WithMany(o => o.Items)
+                .HasForeignKey(o => o.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
             oi.HasOne(oi => oi.Product)
                 .WithMany(p => p.OrderItems)
                 .HasForeignKey(oi => oi.ProductId)

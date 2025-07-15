@@ -13,9 +13,9 @@ namespace Dsw2025Tpi.Domain.Entities
 
         public decimal Subtotal { get; }
 
-        public Guid OrderId { get; }
+        public Guid OrderId { get; set; }
 
-        public Guid ProductId { get;}
+        public Guid ProductId { get; set; }
 
         public Product? Product { get; set; } // Navigation property
 

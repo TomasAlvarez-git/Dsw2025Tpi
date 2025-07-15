@@ -1,6 +1,6 @@
 [
   {
-    "Id": "p1a2b3c4-d5e6-7f8g-9h0i-1234567890ab",
+    "Id": "78eb8127-9728-4d22-9169-54d13b831241",
     "Sku": "SKU001",
     "InternalCode": "INT001",
     "Name": "Producto A",
@@ -10,7 +10,7 @@
     "IsActive": true
   },
   {
-    "Id": "p2b3c4d5-e6f7-8g9h-0i1j-2345678901bc",
+    "Id": "6d595902-eef3-401a-96b3-85367c8e733e",
     "Sku": "SKU002",
     "InternalCode": "INT002",
     "Name": "Producto B",
