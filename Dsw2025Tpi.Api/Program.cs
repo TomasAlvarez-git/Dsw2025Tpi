@@ -5,8 +5,12 @@ using Dsw2025Tpi.Data.Helpers;
 using Dsw2025Tpi.Data.Repositories;
 using Dsw2025Tpi.Domain.Entities;
 using Dsw2025Tpi.Domain.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 
 namespace Dsw2025Tpi.Api;
 
@@ -51,8 +55,49 @@ public class Program
             });
         });
         builder.Services.AddHealthChecks();
-        builder.Services.AddAuthentication().
-            AddJwtBearer();
+        builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+        {
+            options.Password = new PasswordOptions
+            {
+                RequiredLength = 8
+            };
+
+        })
+           .AddEntityFrameworkStores<AuthenticateContext>()
+           .AddDefaultTokenProviders();
+
+        var jwtConfig = builder.Configuration.GetSection("Jwt");
+        var keyText = jwtConfig["Key"] ?? throw new ArgumentNullException("JWT Key");
+        var key = Encoding.UTF8.GetBytes(keyText);
+
+        builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtConfig["Issuer"],
+                    ValidAudience = jwtConfig["Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(key)
+                };
+            });
+
+        
+        builder.Services.AddSingleton<JwtTokenService>();
+        builder.Services.AddDbContext<AuthenticateContext>(options =>
+        {
+            options.UseSqlServer(builder.Configuration.GetConnectionString("Dsw2025TpiEntities"));
+        });
+        builder.Services.AddAuthorization();
+
+        //Configurar el contexto de la base de datos y los servicios de dominio
         builder.Services.AddDbContext<Dsw2025TpiContext>(options =>
         {
             options.UseSqlServer(builder.Configuration.GetConnectionString("Dsw2025TpiEntities"));
@@ -78,6 +123,8 @@ public class Program
         }
 
         app.UseHttpsRedirection();
+
+        app.UseAuthentication(); // Añadir autenticación antes de autorización
 
         app.UseAuthorization();
 
