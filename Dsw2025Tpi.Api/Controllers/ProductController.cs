@@ -1,12 +1,14 @@
 ﻿using Dsw2025Tpi.Application.Dtos;
 using Dsw2025Tpi.Application.Exceptions;
 using Dsw2025Tpi.Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dsw2025Tpi.Api.Controllers
 {
 
     [ApiController]
+    [Authorize]
     [Route("api/products")]
     public class ProductsController : ControllerBase
     {
@@ -19,6 +21,7 @@ namespace Dsw2025Tpi.Api.Controllers
 
 
         [HttpPost()]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddProduct([FromBody] ProductModel.Request request)
         {
             try
@@ -41,6 +44,7 @@ namespace Dsw2025Tpi.Api.Controllers
         }
 
         [HttpGet()]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetProducts()
         {
             var products = await _service.GetProducts();
@@ -49,6 +53,7 @@ namespace Dsw2025Tpi.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetProductBySku(Guid id)
         {
             var product = await _service.GetProductById(id);
@@ -57,6 +62,7 @@ namespace Dsw2025Tpi.Api.Controllers
         }
 
         [HttpPut("api/products/{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateProduct(Guid id, [FromBody] ProductModel.Request request)
         {
             try
@@ -80,6 +86,7 @@ namespace Dsw2025Tpi.Api.Controllers
         }
 
         [HttpPatch("api/products/{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DisableProduct(Guid id)
         {
             try
