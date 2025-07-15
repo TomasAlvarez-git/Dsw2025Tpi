@@ -31,9 +31,9 @@ namespace Dsw2025Tpi.Application.Services
             var exist = await _repository.First<Product>(p => p.Sku == request.Sku);
             if (exist != null) throw new DuplicatedEntityException($"Ya existe un producto con el Sku {request.Sku}");
 
-            var product = new Product(request.Sku, request.Name, request.InternalCode, request.Description, request.CurrentPrice, request.StockQuantity);
+            var product = new Product(request.Sku, request.InternalCode, request.Name, request.Description, request.CurrentPrice, request.StockQuantity);
             await _repository.Add(product);
-            return new ProductModel.Response(product.Sku, product.Name, product.InternalCode, product.Description, product.CurrentPrice, product.StockQuantity, product.IsActive);
+            return new ProductModel.Response(product.Sku, product.InternalCode, product.Name, product.Description, product.CurrentPrice, product.StockQuantity, product.IsActive);
         }
 
         public async Task<IEnumerable<Product>?> GetProducts()

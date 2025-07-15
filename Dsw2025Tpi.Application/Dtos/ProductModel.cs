@@ -10,8 +10,8 @@ namespace Dsw2025Tpi.Application.Dtos
     {
         public record Request(
         string Sku,
-        string Name,
         string InternalCode,
+        string Name,
         string Description,
         decimal CurrentPrice,
         int StockQuantity
@@ -19,8 +19,8 @@ namespace Dsw2025Tpi.Application.Dtos
 
         public record Response(
         string? Sku,
+        string InternalCode,
         string? Name,
-        string? InternalCode,
         string? Description,
         decimal? CurrentPrice,
         int? StockQuantity,
