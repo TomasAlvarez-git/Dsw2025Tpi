@@ -1,6 +1,7 @@
 ﻿using Dsw2025Tpi.Application.Dtos;
 using Dsw2025Tpi.Application.Exceptions;
 using Dsw2025Tpi.Application.Services;
+using Dsw2025Tpi.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -49,7 +50,19 @@ namespace Dsw2025Tpi.Api.Controllers
         {
             var products = await _service.GetProducts();
             if (products == null || !products.Any()) return NoContent();
-            return Ok(products);
+            var result = products.Select(p => new
+            {
+                p.Id,
+                p.Sku,
+                p.InternalCode,
+                p.Name,
+                p.Description,
+                p.CurrentPrice,
+                p.StockQuantity,
+                p.IsActive
+            });
+
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
@@ -58,7 +71,20 @@ namespace Dsw2025Tpi.Api.Controllers
         {
             var product = await _service.GetProductById(id);
             if (product == null) return NotFound();
-            return Ok(product);
+
+            var result = new
+            {
+                product.Id,
+                product.Sku,
+                product.InternalCode,
+                product.Name,
+                product.Description,
+                product.CurrentPrice,
+                product.StockQuantity,
+                product.IsActive
+            };
+
+            return Ok(result);
         }
 
         [HttpPut("api/products/{id}")]
