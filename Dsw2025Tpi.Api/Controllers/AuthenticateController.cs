@@ -38,7 +38,7 @@ namespace Dsw2025Tpi.Api.Controllers
                 return Unauthorized("Usuario o contraseña incorrectos");
             }
 
-            var token = _jwtTokenService.GenerateToken(request.Username);
+            var token = _jwtTokenService.GenerateToken(request.Username, request.Role);
             return Ok(new { token });
         }
 

@@ -112,6 +112,14 @@ public class Program
         builder.Services.AddScoped<IRepository, EfRepository>();
         builder.Services.AddTransient<ProductsManagementService>();
         builder.Services.AddTransient<OrdersManagementService>();
+        
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("PermitirFrontend", policy =>
+                policy.WithOrigins("http://localhost:3000")
+                      .AllowAnyHeader()
+                      .AllowAnyMethod());
+        });
 
         var app = builder.Build();
 
@@ -123,6 +131,8 @@ public class Program
         }
 
         app.UseHttpsRedirection();
+
+        app.UseCors("PermitirFrontend");
 
         app.UseAuthentication(); // Añadir autenticación antes de autorización
 
