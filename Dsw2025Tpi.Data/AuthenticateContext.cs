@@ -28,6 +28,21 @@ namespace Dsw2025Tpi.Data
             builder.Entity<IdentityUserLogin<string>>(b => { b.ToTable("UsuariosLogins"); });
             builder.Entity<IdentityRoleClaim<string>>(b => { b.ToTable("RolesClaims"); });
             builder.Entity<IdentityUserToken<string>>(b => { b.ToTable("UsuariosTokens"); });
+
+            builder.Entity<IdentityRole>().HasData(
+            new IdentityRole
+            {
+                Id = "f936a0de-4c11-4c82-b2f9-38cd193514ed",
+                Name = "Admin",
+                NormalizedName = "ADMIN"
+             },
+            new IdentityRole
+            {
+                Id = "4632eea2-4d43-47ed-b736-0ccd85664371",
+                Name = "Customer",
+                NormalizedName = "CUSTOMER"
+            }
+            );
         }
     }
 }

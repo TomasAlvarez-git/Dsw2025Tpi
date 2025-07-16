@@ -117,7 +117,7 @@ public class Program
         builder.Services.AddCors(options =>
         {
             options.AddPolicy("PermitirFrontend", policy =>
-                policy.WithOrigins("http://localhost:7138")
+                policy.WithOrigins("http://localhost:3000")
                       .AllowAnyHeader()
                       .AllowAnyMethod());
         });
