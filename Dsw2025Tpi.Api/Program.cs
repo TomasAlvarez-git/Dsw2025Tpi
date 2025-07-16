@@ -27,6 +27,7 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(o =>
         {
+            o.CustomSchemaIds(type => type.FullName); // Solución
             o.SwaggerDoc("v1", new OpenApiInfo
             {
                 Title = "Dsw2025Tpi",
@@ -112,11 +113,11 @@ public class Program
         builder.Services.AddScoped<IRepository, EfRepository>();
         builder.Services.AddTransient<ProductsManagementService>();
         builder.Services.AddTransient<OrdersManagementService>();
-        
+
         builder.Services.AddCors(options =>
         {
             options.AddPolicy("PermitirFrontend", policy =>
-                policy.WithOrigins("http://localhost:3000")
+                policy.WithOrigins("http://localhost:7138")
                       .AllowAnyHeader()
                       .AllowAnyMethod());
         });
