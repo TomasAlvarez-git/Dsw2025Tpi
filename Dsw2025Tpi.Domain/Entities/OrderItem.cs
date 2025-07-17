@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Dsw2025Tpi.Domain.Entities
 {
     public class OrderItem : EntityBase
@@ -11,7 +12,7 @@ namespace Dsw2025Tpi.Domain.Entities
         public int Quantity { get; set; }
         public decimal UnitPrice { get; set; }
 
-        public decimal Subtotal { get; }
+        public decimal Subtotal { get; set;  }
 
         public Guid OrderId { get; set; }
 
@@ -27,6 +28,7 @@ namespace Dsw2025Tpi.Domain.Entities
             ProductId = productId;
             Quantity = quantity;
             UnitPrice = unitPrice;
+            Subtotal = quantity * unitPrice;
         }
 
     }

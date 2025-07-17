@@ -27,7 +27,7 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(o =>
         {
-            o.CustomSchemaIds(type => type.FullName); // Solución
+            o.CustomSchemaIds(type => type.FullName.Replace("+", ".")); // Solución
             o.SwaggerDoc("v1", new OpenApiInfo
             {
                 Title = "Dsw2025Tpi",

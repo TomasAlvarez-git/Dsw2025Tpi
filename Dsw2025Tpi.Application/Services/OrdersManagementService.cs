@@ -21,8 +21,8 @@ namespace Dsw2025Tpi.Application.Services
         public async Task<OrderModel.Response> AddOrder(OrderModel.Request request)
         {
             if (request == null ||
-                request.OrderItems == null! || 
-                request.OrderItems.Any() ||
+                request.OrderItems == null! ||
+                !request.OrderItems.Any() ||
                 string.IsNullOrWhiteSpace(request.ShippingAddress)  ||
                 string.IsNullOrWhiteSpace(request.BillingAddress))
             {
@@ -62,17 +62,17 @@ namespace Dsw2025Tpi.Application.Services
             // Crear los ítems de la orden con ProductID asignado
             var orderItems = request.OrderItems.Select(i =>
             {
-                var orderItem = new OrderItem(i.ProductId, i.Quantity, i.CurrentUnitPrice)
-                {
-                    ProductId = i.ProductId
-                };
+                var orderItem = new OrderItem(i.ProductId, i.Quantity, i.CurrentUnitPrice);
                 return orderItem;
             }).ToList();
+
+            var orderTotal = orderItems.Sum(oi => oi.Quantity * oi.UnitPrice);
 
             // Crear la orden
             var order = new Order(request.CustomerId, request.ShippingAddress, request.BillingAddress, orderItems);
 
             await _repository.Add(order);
+
 
             // Armar respuesta
             var response = new OrderModel.Response(
@@ -80,7 +80,7 @@ namespace Dsw2025Tpi.Application.Services
                 CustomerId: order.CustomerId ?? Guid.Empty,
                 ShippingAddress: order.ShippingAddress,
                 BillingAddress: order.BillingAddress,
-                Date: order.Date,
+                Date: order.Date.Date,
                 TotalAmount: order.TotalAmount,
                 Status: order.Status.ToString(),
                 OrderItems: order.Items.Select(oi =>

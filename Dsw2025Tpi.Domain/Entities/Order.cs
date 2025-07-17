@@ -12,7 +12,7 @@ namespace Dsw2025Tpi.Domain.Entities
         public string? ShippingAddress { get; set; }
         public string? BillingAddress { get; set; }
         public string? Notes { get; set; }
-        public decimal TotalAmount { get;}
+        public decimal TotalAmount { get; set; }
         public OrderStatus Status { get; set; } 
 
         public ICollection<OrderItem> Items { get; set; } = new HashSet<OrderItem>();
@@ -28,6 +28,9 @@ namespace Dsw2025Tpi.Domain.Entities
             ShippingAddress = shippingAddress;
             BillingAddress = billingAddress;
             Items = items;
+            Date = DateTime.UtcNow;
+            Status = OrderStatus.PENDING;
+            TotalAmount = items.Sum(i => i.Subtotal);
         }
     }
 }

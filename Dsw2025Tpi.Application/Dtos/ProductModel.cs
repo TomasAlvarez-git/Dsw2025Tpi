@@ -19,7 +19,7 @@ namespace Dsw2025Tpi.Application.Dtos
 
         public record Response(
         string? Sku,
-        string InternalCode,
+        string? InternalCode,
         string? Name,
         string? Description,
         decimal? CurrentPrice,
