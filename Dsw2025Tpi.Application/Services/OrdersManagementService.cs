@@ -23,7 +23,7 @@ namespace Dsw2025Tpi.Application.Services
             if (request == null ||
                 request.OrderItems == null! ||
                 !request.OrderItems.Any() ||
-                string.IsNullOrWhiteSpace(request.ShippingAddress)  ||
+                string.IsNullOrWhiteSpace(request.ShippingAddress) ||
                 string.IsNullOrWhiteSpace(request.BillingAddress))
             {
                 throw new ArgumentException("Datos de la orden inválidos o incompletos.");
@@ -100,6 +100,14 @@ namespace Dsw2025Tpi.Application.Services
             return response;
         }
 
+        public async Task<Order?> GetOrderById(Guid id)
+        {
+            return await _repository.GetById<Order>(
+            id,
+            include: new string[] { "Items", "Items.Product" }
+        );
+        }
+
     }
-   }
+}
 

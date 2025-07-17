@@ -42,5 +42,33 @@ namespace Dsw2025Tpi.Api.Controllers
             }
         }
 
+        [HttpGet("{id}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetOrderById(Guid id)
+        {
+            var order = await _service.GetOrderById(id);
+            if (order == null) return NotFound();
+
+            var result = new
+            {
+                order.Id,
+                order.CustomerId,
+                order.ShippingAddress,
+                order.BillingAddress,
+                order.Date,
+                order.Status,
+                OrderItems = order.Items.Select(oi => new
+                {
+                    oi.ProductId,
+                    oi.Quantity,
+                    oi.UnitPrice,
+                    oi.Subtotal
+                }),
+                Total = order.TotalAmount
+            };
+
+            return Ok(result);
+        }
+
     }
 }
