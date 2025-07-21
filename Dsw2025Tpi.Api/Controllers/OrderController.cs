@@ -1,6 +1,7 @@
 ﻿using Dsw2025Tpi.Application.Dtos;
 using Dsw2025Tpi.Application.Exceptions;
 using Dsw2025Tpi.Application.Services;
+using Dsw2025Tpi.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,6 +42,28 @@ namespace Dsw2025Tpi.Api.Controllers
                 return Problem("Se produjo un error al guardar la orden");
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetOrders(
+           [FromQuery] OrderStatus? status,
+           [FromQuery] Guid? customerId,
+           [FromQuery] int pageNumber = 1,
+           [FromQuery] int pageSize = 10)
+        {
+            try
+            {
+                var orders = await _service.GetOrders(status, customerId, pageNumber, pageSize);
+                if (orders == null || !orders.Any())
+                    return NoContent();
+
+                return Ok(orders);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+    
 
         [HttpGet("{id}")]
         [AllowAnonymous]

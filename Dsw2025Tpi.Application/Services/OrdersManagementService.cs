@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -99,6 +100,62 @@ namespace Dsw2025Tpi.Application.Services
 
             return response;
         }
+
+        public async Task<List<OrderModel.Response>> GetOrders(OrderStatus? status, Guid? customerId, int pageNumber, int pageSize)
+        {
+            // Crear filtro
+            Expression<Func<Order, bool>> filter = o =>
+                (!status.HasValue || o.Status == status.Value) &&
+                (!customerId.HasValue || o.CustomerId == customerId.Value);
+
+            // Traer órdenes con ítems incluidos
+            var allOrders = await _repository.GetFiltered<Order>(filter, "Items");
+
+            if (allOrders == null)
+                return new List<OrderModel.Response>();
+
+            // Aplicar paginación manual (porque el método no la soporta)
+            var pagedOrders = allOrders
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            // Obtener todos los ProductIds que aparecen en los ítems de las órdenes
+            var productIds = pagedOrders
+                .SelectMany(o => o.Items)
+                .Select(i => i.ProductId)
+                .Distinct()
+                .ToList();
+
+            var productsList = await _repository.GetFiltered<Product>(p => productIds.Contains(p.Id));
+            var products = productsList.ToDictionary(p => p.Id);
+
+            // Armar lista de respuestas
+            var responseList = pagedOrders.Select(order => new OrderModel.Response(
+                Id: order.Id,
+                CustomerId: order.CustomerId ?? Guid.Empty,
+                ShippingAddress: order.ShippingAddress,
+                BillingAddress: order.BillingAddress,
+                Date: order.Date,
+                TotalAmount: order.TotalAmount,
+                Status: order.Status.ToString(),
+                OrderItems: order.Items.Select(oi =>
+                {
+                    var product = products.GetValueOrDefault(oi.ProductId);
+                    return new OrderItemModel.Response(
+                        ProductId: oi.ProductId,
+                        Name: product?.Name ?? string.Empty,
+                        Description: product?.Description ?? string.Empty,
+                        UnitPrice: oi.UnitPrice,
+                        Quantity: oi.Quantity,
+                        Subtotal: oi.Subtotal
+                    );
+                }).ToList()
+            )).ToList();
+
+            return responseList;
+        }
+
 
         public async Task<Order?> GetOrderById(Guid id)
         {
