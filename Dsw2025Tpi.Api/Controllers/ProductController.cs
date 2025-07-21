@@ -38,9 +38,9 @@ namespace Dsw2025Tpi.Api.Controllers
             {
                 return Conflict(de.Message);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return Problem("Se produjo un error al guardar el producto");
+                return StatusCode(500,$"Se produjo un error interno del servidor: {e.Message}");
             }
         }
 
@@ -48,43 +48,56 @@ namespace Dsw2025Tpi.Api.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetProducts()
         {
-            var products = await _service.GetProducts();
-            if (products == null || !products.Any()) return NoContent();
-            var result = products.Select(p => new
+            try
             {
-                p.Id,
-                p.Sku,
-                p.InternalCode,
-                p.Name,
-                p.Description,
-                p.CurrentPrice,
-                p.StockQuantity,
-                p.IsActive
-            });
-
-            return Ok(result);
+                var products = await _service.GetProducts();
+                if (products == null || !products.Any()) return NoContent();
+                var result = products.Select(p => new
+                {
+                    p.Id,
+                    p.Sku,
+                    p.InternalCode,
+                    p.Name,
+                    p.Description,
+                    p.CurrentPrice,
+                    p.StockQuantity,
+                    p.IsActive
+                });
+                return Ok(result);
+            }
+            catch(Exception e)
+            { 
+                return StatusCode(500, $"Se produjo un error al obtener los productos{e.Message}");
+            }
         }
 
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetProductBySku(Guid id)
         {
-            var product = await _service.GetProductById(id);
-            if (product == null) return NotFound();
-
-            var result = new
+            try
             {
-                product.Id,
-                product.Sku,
-                product.InternalCode,
-                product.Name,
-                product.Description,
-                product.CurrentPrice,
-                product.StockQuantity,
-                product.IsActive
-            };
+                var product = await _service.GetProductById(id);
+                if (product == null) return NotFound();
 
-            return Ok(result);
+                var result = new
+                {
+                    product.Id,
+                    product.Sku,
+                    product.InternalCode,
+                    product.Name,
+                    product.Description,
+                    product.CurrentPrice,
+                    product.StockQuantity,
+                    product.IsActive
+                };
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, $"Se produjo un error al obtener el producto: {e.Message}");
+            }
         }
 
         [HttpPut("api/products/{id}")]
@@ -106,7 +119,7 @@ namespace Dsw2025Tpi.Api.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Error interno: {ex.Message}"); // 500 Internal Server Error
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}"); // 500 Internal Server Error
             }
 
         }

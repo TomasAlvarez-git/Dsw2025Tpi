@@ -38,9 +38,9 @@ namespace Dsw2025Tpi.Api.Controllers
             {
                 return Conflict(de.Message);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return Problem("Se produjo un error al guardar la orden");
+                return StatusCode(500, $"Se produjo un error en el servidor {e.Message}");
             }
         }
 
@@ -59,45 +59,51 @@ namespace Dsw2025Tpi.Api.Controllers
 
                 return Ok(orders);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return BadRequest();
+                return StatusCode(500, $"Se produjo un error en el servidor {e.Message}");
             }
         }
-    
 
         [HttpGet("{id}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetOrderById(Guid id)
         {
-            var order = await _service.GetOrderById(id);
-            if (order == null) return NotFound();
-
-            var result = new
+            try
             {
-                order.Id,
-                order.CustomerId,
-                order.ShippingAddress,
-                order.BillingAddress,
-                order.Date,
-                order.Status,
-                OrderItems = order.Items.Select(oi => new
-                {
-                    oi.ProductId,
-                    oi.Quantity,
-                    oi.UnitPrice,
-                    oi.Subtotal
-                }),
-                Total = order.TotalAmount
-            };
+                var order = await _service.GetOrderById(id);
+                if (order == null) return NotFound();
 
-            return Ok(result);
+                var result = new
+                {
+                    order.Id,
+                    order.CustomerId,
+                    order.ShippingAddress,
+                    order.BillingAddress,
+                    order.Date,
+                    order.Status,
+                    OrderItems = order.Items.Select(oi => new
+                    {
+                        oi.ProductId,
+                        oi.Quantity,
+                        oi.UnitPrice,
+                        oi.Subtotal
+                    }),
+                    Total = order.TotalAmount
+                };
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, $"Se produjo un error en el servidor {e.Message}");
+            }
         }
 
         [HttpPut("{id}/status")]
         [AllowAnonymous]
 
-       public async Task<IActionResult> UpdateOrderStatus(Guid id, [FromBody] UpdateOrderStatusRequest request)
+        public async Task<IActionResult> UpdateOrderStatus(Guid id, [FromBody] UpdateOrderStatusRequest request)
         {
             try
             {
@@ -109,9 +115,9 @@ namespace Dsw2025Tpi.Api.Controllers
             {
                 return BadRequest(ae.Message);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return Problem("Se produjo un error al actualizar el estado de la orden");
+                return StatusCode(500, $"Se produjo un error en el servidor {e.Message}");
             }
         }
 
