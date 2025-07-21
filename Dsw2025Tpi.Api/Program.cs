@@ -20,19 +20,22 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
-
+        // Agrega servicios básicos para controladores
         builder.Services.AddControllers();
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+        // Agrega servicios para documentar la API (Swagger/OpenAPI)
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(o =>
         {
-            o.CustomSchemaIds(type => type.FullName.Replace("+", ".")); // Solución
+            // Soluciona conflictos de nombres de clases anidadas en Swagger
+            o.CustomSchemaIds(type => type.FullName.Replace("+", "."));
             o.SwaggerDoc("v1", new OpenApiInfo
             {
                 Title = "Dsw2025Tpi",
                 Version = "v1",
             });
+
+            // Configura esquema de autenticación JWT en Swagger
             o.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 In = ParameterLocation.Header,
@@ -55,18 +58,22 @@ public class Program
                 }
             });
         });
+
+        // Agrega soporte para health checks
         builder.Services.AddHealthChecks();
+
+        // Configuración de Identity con política de contraseña mínima
         builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
         {
             options.Password = new PasswordOptions
             {
                 RequiredLength = 8
             };
-
         })
-           .AddEntityFrameworkStores<AuthenticateContext>()
+           .AddEntityFrameworkStores<AuthenticateContext>() // Usa AuthenticateContext como fuente de usuarios
            .AddDefaultTokenProviders();
 
+        // Configura la autenticación JWT
         var jwtConfig = builder.Configuration.GetSection("Jwt");
         var keyText = jwtConfig["Key"] ?? throw new ArgumentNullException("JWT Key");
         var key = Encoding.UTF8.GetBytes(keyText);
@@ -76,29 +83,32 @@ public class Program
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
         })
-            .AddJwtBearer(options =>
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
             {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = jwtConfig["Issuer"],
-                    ValidAudience = jwtConfig["Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(key)
-                };
-            });
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = jwtConfig["Issuer"],
+                ValidAudience = jwtConfig["Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(key)
+            };
+        });
 
-        
+        // Servicio que genera los tokens JWT
         builder.Services.AddSingleton<JwtTokenService>();
+
+        // Configura el contexto de autenticación
         builder.Services.AddDbContext<AuthenticateContext>(options =>
         {
             options.UseSqlServer(builder.Configuration.GetConnectionString("Dsw2025TpiEntities"));
         });
+
         builder.Services.AddAuthorization();
 
-        //Configurar el contexto de la base de datos y los servicios de dominio
+        // Configura el contexto principal con seed (carga inicial de datos desde JSON)
         builder.Services.AddDbContext<Dsw2025TpiContext>(options =>
         {
             options.UseSqlServer(builder.Configuration.GetConnectionString("Dsw2025TpiEntities"));
@@ -110,10 +120,13 @@ public class Program
                 ((Dsw2025TpiContext)c).Seedwork<OrderItem>("Sources\\orderitems.json");
             });
         });
-        builder.Services.AddScoped<IRepository, EfRepository>();
+
+        // Inyección de dependencias para servicios y repositorios
+        builder.Services.AddScoped<IRepository, EfRepository>(); // Patrón repositorio
         builder.Services.AddTransient<ProductsManagementService>();
         builder.Services.AddTransient<OrdersManagementService>();
 
+        // Política CORS para permitir frontend en localhost:3000
         builder.Services.AddCors(options =>
         {
             options.AddPolicy("PermitirFrontend", policy =>
@@ -124,25 +137,33 @@ public class Program
 
         var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
+        // Middleware para entorno de desarrollo: habilita Swagger
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
             app.UseSwaggerUI();
         }
 
+        // Redirección HTTPS obligatoria
         app.UseHttpsRedirection();
 
+        // Aplicar la política de CORS configurada anteriormente
         app.UseCors("PermitirFrontend");
 
-        app.UseAuthentication(); // Añadir autenticación antes de autorización
+        // Habilita autenticación (validación de tokens)
+        app.UseAuthentication();
 
+        // Habilita autorización (validación de roles y claims)
         app.UseAuthorization();
 
+        // Mapeo de los controladores a rutas HTTP
         app.MapControllers();
-        
+
+        // Endpoint para health check
         app.MapHealthChecks("/healthcheck");
 
+        // Inicia la aplicación
         app.Run();
     }
 }
+

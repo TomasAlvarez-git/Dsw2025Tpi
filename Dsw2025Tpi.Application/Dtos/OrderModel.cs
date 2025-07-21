@@ -7,27 +7,33 @@ using System.Threading.Tasks;
 
 namespace Dsw2025Tpi.Application.Dtos
 {
-
+    // Modelo de datos para representar una orden de compra
     public record OrderModel
     {
+        // DTO utilizado para crear una nueva orden
         public record Request(
-        Guid CustomerId,
-        string ShippingAddress,
-        string BillingAddress,
-        List<OrderItemModel.Request> OrderItems
+            Guid CustomerId,                    // ID del cliente que realiza la orden
+            string ShippingAddress,             // Dirección de envío
+            string BillingAddress,              // Dirección de facturación
+            List<OrderItemModel.Request> OrderItems // Lista de ítems que componen la orden
         );
 
-        public record UpdateOrderStatusRequest(OrderStatus newStatus);
+        // DTO utilizado para actualizar el estado de una orden (por ejemplo, de "Pending" a "Shipped")
+        public record UpdateOrderStatusRequest(
+            OrderStatus newStatus               // Nuevo estado de la orden (enum)
+        );
 
+        // DTO utilizado para devolver una orden al cliente (response)
         public record Response(
-        Guid Id,
-        Guid CustomerId,
-        string? ShippingAddress,
-        string? BillingAddress,
-        DateTime Date,
-        decimal? TotalAmount,
-        string? Status,
-        List<OrderItemModel.Response> OrderItems
+            Guid Id,                             // ID de la orden
+            Guid CustomerId,                     // ID del cliente
+            string? ShippingAddress,             // Dirección de envío (puede ser nula)
+            string? BillingAddress,              // Dirección de facturación (puede ser nula)
+            DateTime Date,                       // Fecha de creación de la orden
+            decimal? TotalAmount,                // Monto total de la orden (puede ser nulo)
+            string? Status,                      // Estado actual de la orden (puede ser nulo)
+            List<OrderItemModel.Response> OrderItems // Lista de ítems con sus detalles
         );
     }
 }
+

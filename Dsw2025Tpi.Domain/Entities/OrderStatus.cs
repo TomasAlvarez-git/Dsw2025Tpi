@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dsw2025Tpi.Domain.Entities
 {
+    // Enum que representa los posibles estados de una orden
     public enum OrderStatus
     {
-        PENDING = 1,
-        PROCESSING = 2,
-        SHIPPED = 3,
-        DELIVERED = 4,
-        CANCELED = 5
+        PENDING = 1,     // Orden creada y pendiente de procesamiento
+        PROCESSING = 2,  // Orden en proceso de preparación o embalaje
+        SHIPPED = 3,     // Orden enviada al cliente
+        DELIVERED = 4,   // Orden entregada al cliente
+        CANCELED = 5     // Orden cancelada y no completada
     }
 }

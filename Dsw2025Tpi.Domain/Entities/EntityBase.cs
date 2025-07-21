@@ -1,11 +1,16 @@
-﻿namespace Dsw2025Tpi.Domain.Entities;
-
-public abstract class EntityBase
+﻿namespace Dsw2025Tpi.Domain.Entities
 {
-    public Guid Id { get; set; }
-    protected EntityBase()
+    // Clase base abstracta para todas las entidades del dominio
+    public abstract class EntityBase
     {
-        Id = Guid.NewGuid();
-    }
+        // Identificador único global (GUID) para cada entidad
+        public Guid Id { get; set; }
 
+        // Constructor protegido para evitar instanciar directamente y generar un nuevo Id
+        protected EntityBase()
+        {
+            // Al crear la entidad, asigna automáticamente un nuevo GUID único
+            Id = Guid.NewGuid();
+        }
+    }
 }
