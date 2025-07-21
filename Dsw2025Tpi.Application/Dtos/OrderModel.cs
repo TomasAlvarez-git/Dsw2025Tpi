@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dsw2025Tpi.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,8 @@ namespace Dsw2025Tpi.Application.Dtos
         string BillingAddress,
         List<OrderItemModel.Request> OrderItems
         );
+
+        public record UpdateOrderStatusRequest(OrderStatus newStatus);
 
         public record Response(
         Guid Id,

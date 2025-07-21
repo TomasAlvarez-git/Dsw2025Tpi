@@ -156,14 +156,69 @@ namespace Dsw2025Tpi.Application.Services
             return responseList;
         }
 
-
         public async Task<Order?> GetOrderById(Guid id)
         {
             return await _repository.GetById<Order>(
             id,
             include: new string[] { "Items", "Items.Product" }
-        );
+            );
         }
+
+        public async Task<OrderModel.Response?> UpdateOrderStatus(Guid id, OrderStatus newStatus)
+        {
+            // Traer la orden con los ítems incluidos
+            var order = await _repository.GetById<Order>(id, "Items");
+
+            if (order == null)
+                return null;
+
+            if (!Enum.IsDefined(typeof(OrderStatus), newStatus))
+                throw new ArgumentException("Estado de orden inválido.");
+
+            if ((int)newStatus < 1 || (int)newStatus > 5)
+                throw new ArgumentException("El estado de la orden no puede ser un estado intermedio.");
+
+            // Idempotencia: solo actualiza si es diferente
+            if (order.Status != newStatus)
+            {
+                order.Status = newStatus;
+                await _repository.Update(order);
+            }
+
+            // Obtener los IDs de productos involucrados en esta orden
+            var productIds = order.Items
+                .Select(i => i.ProductId)
+                .Distinct()
+                .ToList();
+
+            // Traer los productos asociados
+            var productsList = await _repository.GetFiltered<Product>(p => productIds.Contains(p.Id));
+            var products = productsList.ToDictionary(p => p.Id);
+
+            // Construir respuesta
+            return new OrderModel.Response(
+                Id: order.Id,
+                CustomerId: order.CustomerId ?? Guid.Empty,
+                ShippingAddress: order.ShippingAddress,
+                BillingAddress: order.BillingAddress,
+                Date: order.Date.Date,
+                TotalAmount: order.TotalAmount,
+                Status: order.Status.ToString(),
+                OrderItems: order.Items.Select(oi =>
+                {
+                    var product = products.GetValueOrDefault(oi.ProductId);
+                    return new OrderItemModel.Response(
+                        ProductId: oi.ProductId,
+                        Name: product?.Name ?? string.Empty,
+                        Description: product?.Description ?? string.Empty,
+                        UnitPrice: oi.UnitPrice,
+                        Quantity: oi.Quantity,
+                        Subtotal: oi.Subtotal
+                    );
+                }).ToList()
+            );
+        }
+
 
     }
 }

@@ -4,6 +4,7 @@ using Dsw2025Tpi.Application.Services;
 using Dsw2025Tpi.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static Dsw2025Tpi.Application.Dtos.OrderModel;
 
 namespace Dsw2025Tpi.Api.Controllers
 {
@@ -92,6 +93,28 @@ namespace Dsw2025Tpi.Api.Controllers
 
             return Ok(result);
         }
+
+        [HttpPut("{id}/status")]
+        [AllowAnonymous]
+
+       public async Task<IActionResult> UpdateOrderStatus(Guid id, [FromBody] UpdateOrderStatusRequest request)
+        {
+            try
+            {
+                var updatedOrder = await _service.UpdateOrderStatus(id, request.newStatus);
+                if (updatedOrder == null) return NotFound();
+                return Ok(updatedOrder);
+            }
+            catch (ArgumentException ae)
+            {
+                return BadRequest(ae.Message);
+            }
+            catch (Exception)
+            {
+                return Problem("Se produjo un error al actualizar el estado de la orden");
+            }
+        }
+
 
     }
 }
