@@ -23,6 +23,7 @@ namespace Dsw2025Tpi.Api.Controllers
         }
 
         [HttpPost()]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> AddOrder([FromBody] OrderModel.Request request)
         {
             try
@@ -45,6 +46,8 @@ namespace Dsw2025Tpi.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> GetOrders(
            [FromQuery] OrderStatus? status,
            [FromQuery] Guid? customerId,
@@ -66,7 +69,8 @@ namespace Dsw2025Tpi.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> GetOrderById(Guid id)
         {
             try
@@ -101,7 +105,7 @@ namespace Dsw2025Tpi.Api.Controllers
         }
 
         [HttpPut("{id}/status")]
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin")]
 
         public async Task<IActionResult> UpdateOrderStatus(Guid id, [FromBody] UpdateOrderStatusRequest request)
         {

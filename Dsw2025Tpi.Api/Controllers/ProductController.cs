@@ -100,7 +100,7 @@ namespace Dsw2025Tpi.Api.Controllers
             }
         }
 
-        [HttpPut("api/products/{id}")]
+        [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateProduct(Guid id, [FromBody] ProductModel.Request request)
         {
@@ -124,7 +124,7 @@ namespace Dsw2025Tpi.Api.Controllers
 
         }
 
-        [HttpPatch("api/products/{id}")]
+        [HttpPatch("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DisableProduct(Guid id)
         {
