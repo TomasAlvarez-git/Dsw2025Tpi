@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Dsw2025Tpi.Application.Dtos
 {
@@ -19,7 +20,7 @@ namespace Dsw2025Tpi.Application.Dtos
         );
 
         // DTO utilizado para actualizar el estado de una orden (por ejemplo, de "Pending" a "Shipped")
-        public record UpdateOrderStatusRequest(
+         public record UpdateOrderStatusRequest(
             OrderStatus newStatus               // Nuevo estado de la orden (enum)
         );
 

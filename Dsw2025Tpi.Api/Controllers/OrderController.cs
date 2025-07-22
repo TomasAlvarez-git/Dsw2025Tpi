@@ -103,7 +103,7 @@ namespace Dsw2025Tpi.Api.Controllers
                     order.CustomerId,
                     order.ShippingAddress,
                     order.BillingAddress,
-                    order.Date,
+                    Date = order.Date.ToString("dd/MM/yyyyTHH:mm:ss"),
                     order.Status,
                     OrderItems = order.Items.Select(oi => new
                     {

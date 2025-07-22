@@ -8,6 +8,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Dsw2025Tpi.Application.Services
 {
@@ -77,8 +78,15 @@ namespace Dsw2025Tpi.Application.Services
             // Calcular el total de la orden sumando el subtotal de cada ítem
             var orderTotal = orderItems.Sum(oi => oi.Quantity * oi.UnitPrice);
 
-            // Crear la entidad orden con cliente, direcciones y los ítems
-            var order = new Order(request.CustomerId, request.ShippingAddress, request.BillingAddress, orderItems);
+            // Obtener la hora local de Argentina
+            var argentinaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Argentina Standard Time");
+            var fechaLocalArgentina = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, argentinaTimeZone);
+
+            // Crear la entidad orden con cliente, direcciones, los ítems y asignar la fecha local Argentina
+            var order = new Order(request.CustomerId, request.ShippingAddress, request.BillingAddress, orderItems)
+            {
+                Date = fechaLocalArgentina
+            };
 
             // Agregar la orden al repositorio (persistencia)
             await _repository.Add(order);
@@ -89,7 +97,7 @@ namespace Dsw2025Tpi.Application.Services
                 CustomerId: order.CustomerId ?? Guid.Empty,
                 ShippingAddress: order.ShippingAddress,
                 BillingAddress: order.BillingAddress,
-                Date: order.Date.Date,
+                Date : order.Date,
                 TotalAmount: order.TotalAmount,
                 Status: order.Status.ToString(),
                 OrderItems: order.Items.Select(oi =>
@@ -213,7 +221,7 @@ namespace Dsw2025Tpi.Application.Services
                 CustomerId: order.CustomerId ?? Guid.Empty,
                 ShippingAddress: order.ShippingAddress,
                 BillingAddress: order.BillingAddress,
-                Date: order.Date.Date,
+                Date: order.Date,
                 TotalAmount: order.TotalAmount,
                 Status: order.Status.ToString(),
                 OrderItems: order.Items.Select(oi =>

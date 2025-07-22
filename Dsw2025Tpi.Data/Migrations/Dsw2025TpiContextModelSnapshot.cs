@@ -10,211 +10,200 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Dsw2025Tpi.Data.Migrations
 {
-    // Contexto al que pertenece este snapshot (modelo actual de la base de datos)
     [DbContext(typeof(Dsw2025TpiContext))]
     partial class Dsw2025TpiContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            // Información general sobre la versión de EF Core y restricciones de longitud
             modelBuilder
                 .HasAnnotation("ProductVersion", "9.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            // Configura el uso de Identity columns para SQL Server (auto-incrementos)
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            // Definición de la entidad Customer (Cliente)
             modelBuilder.Entity("Dsw2025Tpi.Domain.Entities.Customer", b =>
-            {
-                b.Property<Guid>("Id")                  // PK: Identificador único
-                    .ValueGeneratedOnAdd()             // Se genera automáticamente al insertar
-                    .HasColumnType("uniqueidentifier");
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
-                b.Property<string>("Email")            // Email obligatorio
-                    .IsRequired()
-                    .HasMaxLength(100)
-                    .HasColumnType("nvarchar(100)");
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
-                b.Property<string>("Name")             // Nombre obligatorio
-                    .IsRequired()
-                    .HasMaxLength(60)
-                    .HasColumnType("nvarchar(60)");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
-                b.Property<string>("Phone")            // Teléfono opcional
-                    .HasMaxLength(15)
-                    .HasColumnType("nvarchar(15)");
+                    b.Property<string>("Phone")
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
 
-                b.HasKey("Id");                        // Clave primaria
+                    b.HasKey("Id");
 
-                b.ToTable("Customer");                 // Mapea a tabla "Customer"
-            });
+                    b.ToTable("Customer");
+                });
 
-            // Definición de la entidad Order (Pedido)
             modelBuilder.Entity("Dsw2025Tpi.Domain.Entities.Order", b =>
-            {
-                b.Property<Guid>("Id")
-                    .ValueGeneratedOnAdd()
-                    .HasColumnType("uniqueidentifier");
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
-                b.Property<string>("BillingAddress")     // Dirección de facturación (obligatoria)
-                    .IsRequired()
-                    .HasMaxLength(200)
-                    .HasColumnType("nvarchar(200)");
+                    b.Property<string>("BillingAddress")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
-                b.Property<Guid?>("CustomerId")           // FK opcional a Customer
-                    .HasColumnType("uniqueidentifier");
+                    b.Property<Guid?>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
 
-                b.Property<DateTime>("Date")               // Fecha del pedido
-                    .HasColumnType("datetime2");
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
 
-                b.Property<string>("Notes")                 // Notas opcionales
-                    .HasMaxLength(500)
-                    .HasColumnType("nvarchar(500)");
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
-                b.Property<string>("ShippingAddress")       // Dirección de envío (obligatoria)
-                    .IsRequired()
-                    .HasMaxLength(200)
-                    .HasColumnType("nvarchar(200)");
+                    b.Property<string>("ShippingAddress")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
-                b.Property<int>("Status")                    // Estado del pedido (enum representado como int)
-                    .HasColumnType("int");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
-                b.Property<decimal>("TotalAmount")           // Monto total del pedido con precisión decimal
-                    .HasPrecision(15, 2)
-                    .HasColumnType("decimal(15,2)");
+                    b.Property<decimal>("TotalAmount")
+                        .HasPrecision(15, 2)
+                        .HasColumnType("decimal(15,2)");
 
-                b.HasKey("Id");                             // Clave primaria
+                    b.HasKey("Id");
 
-                b.HasIndex("CustomerId");                   // Índice en CustomerId para optimización
+                    b.HasIndex("CustomerId");
 
-                b.ToTable("Order");                         // Tabla "Order"
-            });
+                    b.ToTable("Order");
+                });
 
-            // Definición de la entidad OrderItem (Detalle de pedido)
             modelBuilder.Entity("Dsw2025Tpi.Domain.Entities.OrderItem", b =>
-            {
-                b.Property<Guid>("Id")
-                    .ValueGeneratedOnAdd()
-                    .HasColumnType("uniqueidentifier");
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
-                b.Property<Guid>("OrderId")                   // FK obligatorio a Order
-                    .HasColumnType("uniqueidentifier");
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uniqueidentifier");
 
-                b.Property<Guid>("ProductId")                 // FK obligatorio a Product
-                    .HasColumnType("uniqueidentifier");
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
 
-                b.Property<int>("Quantity")                    // Cantidad solicitada
-                    .HasColumnType("int");
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
 
-                b.Property<decimal>("Subtotal")                // Subtotal = Quantity * UnitPrice
-                    .HasPrecision(15, 2)
-                    .HasColumnType("decimal(15,2)");
+                    b.Property<decimal>("Subtotal")
+                        .HasPrecision(15, 2)
+                        .HasColumnType("decimal(15,2)");
 
-                b.Property<decimal>("UnitPrice")               // Precio unitario
-                    .HasPrecision(15, 2)
-                    .HasColumnType("decimal(15,2)");
+                    b.Property<decimal>("UnitPrice")
+                        .HasPrecision(15, 2)
+                        .HasColumnType("decimal(15,2)");
 
-                b.HasKey("Id");                               // Clave primaria
+                    b.HasKey("Id");
 
-                b.HasIndex("OrderId");                         // Índices para optimizar consultas
-                b.HasIndex("ProductId");
+                    b.HasIndex("OrderId");
 
-                b.ToTable("OrderItem");                        // Tabla "OrderItem"
-            });
+                    b.HasIndex("ProductId");
 
-            // Definición de la entidad Product (Producto)
-            modelBuilder.Entity("Dsw2025Tpi.Domain.Entities.Product", b =>
-            {
-                b.Property<Guid>("Id")
-                    .ValueGeneratedOnAdd()
-                    .HasColumnType("uniqueidentifier");
-
-                b.Property<decimal>("CurrentPrice")            // Precio actual del producto
-                    .HasPrecision(15, 2)
-                    .HasColumnType("decimal(15,2)");
-
-                b.Property<string>("Description")               // Descripción opcional
-                    .HasMaxLength(500)
-                    .HasColumnType("nvarchar(500)");
-
-                b.Property<string>("InternalCode")              // Código interno obligatorio
-                    .IsRequired()
-                    .HasMaxLength(30)
-                    .HasColumnType("nvarchar(30)");
-
-                b.Property<bool>("IsActive")                     // Estado activo, valor por defecto true
-                    .ValueGeneratedOnAdd()
-                    .HasColumnType("bit")
-                    .HasDefaultValue(true);
-
-                b.Property<string>("Name")                        // Nombre obligatorio
-                    .IsRequired()
-                    .HasMaxLength(60)
-                    .HasColumnType("nvarchar(60)");
-
-                b.Property<string>("Sku")                         // SKU obligatorio
-                    .IsRequired()
-                    .HasMaxLength(15)
-                    .HasColumnType("nvarchar(15)");
-
-                b.Property<int>("StockQuantity")                  // Cantidad en stock
-                    .HasColumnType("int");
-
-                b.HasKey("Id");                                  // Clave primaria
-
-                b.ToTable("Product");                            // Tabla "Product"
-            });
-
-            // Relaciones entre tablas
-
-            // Order tiene relación muchos a uno con Customer
-            modelBuilder.Entity("Dsw2025Tpi.Domain.Entities.Order", b =>
-            {
-                b.HasOne("Dsw2025Tpi.Domain.Entities.Customer", "Customer")
-                    .WithMany("Orders")
-                    .HasForeignKey("CustomerId")
-                    .OnDelete(DeleteBehavior.SetNull);  // Al borrar cliente, dejar null en orden
-
-                b.Navigation("Customer");
-            });
-
-            // OrderItem tiene relación muchos a uno con Order y con Product
-            modelBuilder.Entity("Dsw2025Tpi.Domain.Entities.OrderItem", b =>
-            {
-                b.HasOne("Dsw2025Tpi.Domain.Entities.Order", "Order")
-                    .WithMany("Items")
-                    .HasForeignKey("OrderId")
-                    .OnDelete(DeleteBehavior.Cascade)   // Al borrar orden, borrar items relacionados
-                    .IsRequired();
-
-                b.HasOne("Dsw2025Tpi.Domain.Entities.Product", "Product")
-                    .WithMany("OrderItems")
-                    .HasForeignKey("ProductId")
-                    .OnDelete(DeleteBehavior.Restrict) // No permite borrar producto con items asociados
-                    .IsRequired();
-
-                b.Navigation("Order");
-
-                b.Navigation("Product");
-            });
-
-            // Navegaciones para facilitar acceso a colecciones
-            modelBuilder.Entity("Dsw2025Tpi.Domain.Entities.Customer", b =>
-            {
-                b.Navigation("Orders");
-            });
-
-            modelBuilder.Entity("Dsw2025Tpi.Domain.Entities.Order", b =>
-            {
-                b.Navigation("Items");
-            });
+                    b.ToTable("OrderItem");
+                });
 
             modelBuilder.Entity("Dsw2025Tpi.Domain.Entities.Product", b =>
-            {
-                b.Navigation("OrderItems");
-            });
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("CurrentPrice")
+                        .HasPrecision(15, 2)
+                        .HasColumnType("decimal(15,2)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("InternalCode")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<string>("Sku")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
+
+                    b.Property<int>("StockQuantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Product");
+                });
+
+            modelBuilder.Entity("Dsw2025Tpi.Domain.Entities.Order", b =>
+                {
+                    b.HasOne("Dsw2025Tpi.Domain.Entities.Customer", "Customer")
+                        .WithMany("Orders")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("Dsw2025Tpi.Domain.Entities.OrderItem", b =>
+                {
+                    b.HasOne("Dsw2025Tpi.Domain.Entities.Order", "Order")
+                        .WithMany("Items")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Dsw2025Tpi.Domain.Entities.Product", "Product")
+                        .WithMany("OrderItems")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Dsw2025Tpi.Domain.Entities.Customer", b =>
+                {
+                    b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("Dsw2025Tpi.Domain.Entities.Order", b =>
+                {
+                    b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("Dsw2025Tpi.Domain.Entities.Product", b =>
+                {
+                    b.Navigation("OrderItems");
+                });
 #pragma warning restore 612, 618
         }
     }
