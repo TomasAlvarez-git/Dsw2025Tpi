@@ -59,8 +59,7 @@ namespace Dsw2025Tpi.Api.Controllers
 
         // Endpoint para obtener una lista paginada de órdenes (admin y cliente)
         [HttpGet]
-        [Authorize(Roles = "Admin")]
-        [Authorize(Roles = "Customer")]
+        [Authorize(Roles = "Admin, Customer")]
         public async Task<IActionResult> GetOrders(
            [FromQuery] OrderStatus? status,         // Filtrar por estado opcional
            [FromQuery] Guid? customerId,            // Filtrar por cliente opcional
@@ -88,8 +87,7 @@ namespace Dsw2025Tpi.Api.Controllers
 
         // Endpoint para obtener los detalles de una orden por ID
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin")]
-        [Authorize(Roles = "Customer")]
+        [Authorize(Roles = "Admin, Customer")]
         public async Task<IActionResult> GetOrderById(Guid id)
         {
             try
