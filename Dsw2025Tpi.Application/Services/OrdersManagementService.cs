@@ -1,4 +1,5 @@
 ﻿using Dsw2025Tpi.Application.Dtos;
+using Dsw2025Tpi.Application.Exceptions;
 using Dsw2025Tpi.Domain.Entities;
 using Dsw2025Tpi.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -28,11 +29,11 @@ namespace Dsw2025Tpi.Application.Services
             // Validación básica de que los datos no sean nulos o vacíos
             if (request == null ||
                 request.OrderItems == null! ||
-                !request.OrderItems.Any() ||
+                request.OrderItems.Count == 0 ||
                 string.IsNullOrWhiteSpace(request.ShippingAddress) ||
                 string.IsNullOrWhiteSpace(request.BillingAddress))
             {
-                throw new ArgumentException("Datos de la orden inválidos o incompletos.");
+                throw new BadRequestException("Datos de la orden inválidos o incompletos.");
             }
 
             // Extraer IDs únicos de productos de la orden
@@ -44,7 +45,7 @@ namespace Dsw2025Tpi.Application.Services
             // Validar que todos los productos solicitados existan
             if (productsList == null || productsList.Count() != productIds.Count)
             {
-                throw new InvalidOperationException("Uno o más productos no existen.");
+                throw new BadRequestException("Uno o más productos no existen.");
             }
 
             // Convertir lista de productos en diccionario para acceso rápido por ID
@@ -56,7 +57,7 @@ namespace Dsw2025Tpi.Application.Services
                 var product = products[item.ProductId];
                 if (!product.StockQuantity.HasValue || item.Quantity > product.StockQuantity.Value)
                 {
-                    throw new InvalidOperationException($"Stock insuficiente para el producto '{product.Name}' (ID: {product.Id}). Disponible: {product.StockQuantity ?? 0}, solicitado: {item.Quantity}.");
+                    throw new BadRequestException($"Stock insuficiente para el producto '{product.Name}' (ID: {product.Id}). Disponible: {product.StockQuantity ?? 0}, solicitado: {item.Quantity}.");
                 }
             }
 
@@ -174,12 +175,20 @@ namespace Dsw2025Tpi.Application.Services
         }
 
         // Obtener una orden completa por su ID, incluyendo los ítems y los productos relacionados
-        public async Task<Order?> GetOrderById(Guid id)
+        public async Task<Order?> GetOrderById(Guid Id)
         {
-            return await _repository.GetById<Order>(
-            id,
-            include: new string[] { "Items", "Items.Product" } // carga relacionada para evitar lazy loading
+            var orders = await _repository.GetFiltered<Order>(
+                o => o.Id == Id,
+                include: new[] { "Items", "Items.Product" }
             );
+
+            var order = orders.FirstOrDefault();
+            if (order == null)
+            {
+                throw new NotFoundException($"No se encontró la orden con el ID {Id}");
+            }
+
+            return order;
         }
 
         // Actualiza el estado de una orden y devuelve su información actualizada
@@ -189,15 +198,15 @@ namespace Dsw2025Tpi.Application.Services
             var order = await _repository.GetById<Order>(id, "Items");
 
             if (order == null)
-                return null;
+                throw new NotFoundException("La orden solicitada no existe");
 
             // Validar que el nuevo estado sea válido en el enum
             if (!Enum.IsDefined(typeof(OrderStatus), newStatus))
-                throw new ArgumentException("Estado de orden inválido.");
+                throw new BadRequestException("Estado de orden inválido.");
 
             // Validar que el estado no sea un estado intermedio no permitido
             if ((int)newStatus < 1 || (int)newStatus > 5)
-                throw new ArgumentException("El estado de la orden no puede ser un estado intermedio.");
+                throw new BadRequestException("El estado de la orden no puede ser un estado intermedio.");
 
             // Solo actualizar si el estado es diferente (idempotencia)
             if (order.Status != newStatus)

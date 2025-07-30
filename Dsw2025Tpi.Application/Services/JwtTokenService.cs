@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Dsw2025Tpi.Application.Exceptions;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,7 @@ namespace Dsw2025Tpi.Application.Services
             var jwtConfig = _config.GetSection("Jwt");
 
             // Obtiene la clave secreta para firmar el token. Si no está configurada, lanza excepción
-            var keyText = jwtConfig["Key"] ?? throw new ArgumentNullException("Jwt Key");
+            var keyText = jwtConfig["Key"] ?? throw new NotFoundException("Jwt Key");
 
             // Crea una clave simétrica usando la clave secreta (como bytes UTF8)
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyText));

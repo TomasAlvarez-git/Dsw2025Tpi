@@ -26,9 +26,9 @@ namespace Dsw2025Tpi.Application.Services
             // Validar que los datos obligatorios estén presentes y sean válidos
             if (string.IsNullOrWhiteSpace(request.Sku) ||
                 string.IsNullOrWhiteSpace(request.Name) ||
-                request.CurrentPrice < 0)
+                request.CurrentPrice < 0 || request.StockQuantity < 0)
             {
-                throw new ArgumentException("Valores para el producto no válidos");
+                throw new BadRequestException("Valores para el producto no válidos");
             }
 
             // Verificar si ya existe un producto con el mismo SKU para evitar duplicados
@@ -48,13 +48,19 @@ namespace Dsw2025Tpi.Application.Services
         // Obtener todos los productos existentes
         public async Task<IEnumerable<Product>?> GetProducts()
         {
-            return await _repository.GetAll<Product>();
+            var products = await _repository.GetAll<Product>();
+
+            if (products == null || !products.Any()) throw new NoContentException("No hay productos disponibles en la base de datos.");
+
+            return products;
         }
 
         // Obtener un producto por su Id
         public async Task<Product?> GetProductById(Guid id)
         {
-            return await _repository.GetById<Product>(id);
+            var product = await _repository.GetById<Product>(id);
+
+            return product == null ? throw new NotFoundException("El producto solicitado no existe.") : await _repository.GetById<Product>(id);
         }
 
         // Actualizar datos de un producto existente
@@ -63,17 +69,13 @@ namespace Dsw2025Tpi.Application.Services
             // Validar los datos de entrada
             if (string.IsNullOrWhiteSpace(request.Sku) ||
                 string.IsNullOrWhiteSpace(request.Name) ||
-                request.CurrentPrice < 0)
+                request.CurrentPrice < 0 || request.StockQuantity < 0)
             {
-                throw new ArgumentException("Los datos enviados no son válidos.");
+                throw new BadRequestException("Los datos enviados no son válidos.");
             }
 
             // Buscar el producto a actualizar
-            var product = await _repository.GetById<Product>(Id);
-            if (product == null)
-            {
-                return null; // No se encontró el producto
-            }
+            var product = await _repository.GetById<Product>(Id) ?? throw new NotFoundException($"No se encontro un producto con el ID: {Id}.");
 
             // Actualizar manualmente cada propiedad con los nuevos datos
             product.Sku = request.Sku;
@@ -99,12 +101,10 @@ namespace Dsw2025Tpi.Application.Services
         }
 
         // Método para desactivar un producto (no eliminarlo)
-        public async Task<bool> DisableProduct(Guid id)
+        public async Task<bool> DisableProduct(Guid Id)
         {
             // Paso 1: buscar el producto por Id
-            var product = await _repository.GetById<Product>(id);
-            if (product == null)
-                return false; // No existe el producto
+            var product = await _repository.GetById<Product>(Id) ?? throw new NotFoundException($"No se encontro un producto con el Id: {Id}.");
 
             // Paso 2: cambiar la propiedad IsActive a false para "desactivar"
             product.IsActive = false;

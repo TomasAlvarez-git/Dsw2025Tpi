@@ -1,4 +1,5 @@
 
+using Dsw2025Tpi.Api.Middleware;
 using Dsw2025Tpi.Application.Services;
 using Dsw2025Tpi.Data;
 using Dsw2025Tpi.Data.Helpers;
@@ -143,6 +144,9 @@ public class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
+
+        // Middleware para manejo de excepciones globales
+        app.UseExceptionMiddleware();
 
         // Redirección HTTPS obligatoria
         app.UseHttpsRedirection();
