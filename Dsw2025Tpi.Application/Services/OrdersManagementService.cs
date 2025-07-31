@@ -182,7 +182,7 @@ namespace Dsw2025Tpi.Application.Services
         }
 
         // Actualiza el estado de una orden y devuelve su información actualizada
-        public async Task<OrderModel.Response?> UpdateOrderStatus(Guid id, OrderStatus newStatus)
+        public async Task<OrderModel.Response?> UpdateOrderStatus(Guid id, string newStatusText)
         {
             // Traer la orden con los ítems para validar y actualizar
             var order = await _repository.GetById<Order>(id, "Items");
@@ -190,13 +190,16 @@ namespace Dsw2025Tpi.Application.Services
             if (order == null)
                 throw new NotFoundException("La orden solicitada no existe");
 
-            // Validar que el nuevo estado sea válido en el enum
-            if (!Enum.IsDefined(typeof(OrderStatus), newStatus))
-                throw new BadRequestException("Estado de orden inválido.");
+            // Validar que no sea un número (para evitar casos como "1", "2", etc.)
+            if (int.TryParse(newStatusText, out _))
+                throw new BadRequestException("No se permite ingresar un número como estado. Usá uno de los siguientes: PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELED.");
 
-            // Validar que el estado no sea un estado intermedio no permitido
-            if ((int)newStatus < 1 || (int)newStatus > 5)
-                throw new BadRequestException("El estado de la orden no puede ser un estado intermedio.");
+            // Validar que el string sea un valor definido del enum (case-insensitive)
+            if (!Enum.TryParse<OrderStatus>(newStatusText, true, out var newStatus) ||
+                !Enum.GetNames(typeof(OrderStatus)).Contains(newStatus.ToString()))
+            {
+                throw new BadRequestException("Estado de orden inválido. Debe ser uno de: PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELED.");
+            }
 
             // Solo actualizar si el estado es diferente (idempotencia)
             if (order.Status != newStatus)
@@ -206,15 +209,11 @@ namespace Dsw2025Tpi.Application.Services
             }
 
             // Obtener productos involucrados para devolver datos completos
-            var productIds = order.Items
-                .Select(i => i.ProductId)
-                .Distinct()
-                .ToList();
-
+            var productIds = order.Items.Select(i => i.ProductId).Distinct().ToList();
             var productsList = await _repository.GetFiltered<Product>(p => productIds.Contains(p.Id));
             var products = productsList.ToDictionary(p => p.Id);
 
-            // Construir y devolver la respuesta con la orden actualizada
+            // Construir y devolver la respuesta
             return new OrderModel.Response(
                 Id: order.Id,
                 CustomerId: order.CustomerId ?? Guid.Empty,
@@ -237,6 +236,8 @@ namespace Dsw2025Tpi.Application.Services
                 }).ToList()
             );
         }
+
+
     }
 }
 

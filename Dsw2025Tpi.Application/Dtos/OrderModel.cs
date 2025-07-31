@@ -20,8 +20,8 @@ namespace Dsw2025Tpi.Application.Dtos
         );
 
         // DTO utilizado para actualizar el estado de una orden (por ejemplo, de "Pending" a "Shipped")
-         public record UpdateOrderStatusRequest(
-            OrderStatus newStatus               // Nuevo estado de la orden (enum)
+        public record UpdateOrderStatusRequest(
+            string NewStatus
         );
 
         // DTO utilizado para devolver una orden al cliente (response)

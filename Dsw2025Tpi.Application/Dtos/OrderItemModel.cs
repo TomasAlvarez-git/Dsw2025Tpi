@@ -12,10 +12,7 @@ namespace Dsw2025Tpi.Application.Dtos
         // DTO que se utiliza para la solicitud (Request) de creación o carga de un ítem de orden.
         public record Request(
             Guid ProductId,          // ID del producto (clave primaria del producto)
-            int Quantity,            // Cantidad del producto en la orden
-            string Name,             // Nombre del producto (puede usarse para mostrar)
-            string Description,      // Descripción del producto
-            decimal CurrentUnitPrice // Precio unitario actual del producto
+            int Quantity
         );
 
         // DTO que se utiliza para la respuesta (Response) de un ítem de orden ya procesado.

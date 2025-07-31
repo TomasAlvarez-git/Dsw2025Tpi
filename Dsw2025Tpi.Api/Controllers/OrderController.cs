@@ -88,10 +88,12 @@ namespace Dsw2025Tpi.Api.Controllers
         // Endpoint para actualizar el estado de una orden (solo admin)
         [HttpPut("{id}/status")]
         [Authorize(Roles = "Admin")]
+        
+        
         public async Task<IActionResult> UpdateOrderStatus(Guid id, [FromBody] UpdateOrderStatusRequest request)
         {
             // Cambia el estado de la orden utilizando el servicio
-            var updatedOrder = await _service.UpdateOrderStatus(id, request.newStatus);
+            var updatedOrder = await _service.UpdateOrderStatus(id, request.NewStatus);
 
             // Devuelve los datos actualizados de la orden
             return Ok(updatedOrder);
