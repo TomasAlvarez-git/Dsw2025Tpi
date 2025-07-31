@@ -3,6 +3,7 @@ using Dsw2025Tpi.Application.Exceptions;
 using Dsw2025Tpi.Domain.Entities;
 using Dsw2025Tpi.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,51 +17,51 @@ namespace Dsw2025Tpi.Application.Services
     public class OrdersManagementService
     {
         private readonly IRepository _repository;
+        private readonly ILogger<OrdersManagementService> _logger;
 
-        // Constructor que recibe un repositorio genérico para operar con la base de datos
-        public OrdersManagementService(IRepository repository)
+        public OrdersManagementService(IRepository repository, ILogger<OrdersManagementService> logger)
         {
             _repository = repository;
+            _logger = logger;
         }
 
-        // Método para agregar una nueva orden, validando datos, stock y actualizando inventario
         public async Task<OrderModel.Response> AddOrder(OrderModel.Request request)
         {
-            // Validación básica de la orden
+            _logger.LogInformation("Iniciando creación de orden para cliente {CustomerId}", request.CustomerId);
+
             if (request == null ||
                 request.OrderItems == null ||
                 request.OrderItems.Count == 0 ||
                 string.IsNullOrWhiteSpace(request.ShippingAddress) ||
                 string.IsNullOrWhiteSpace(request.BillingAddress))
             {
+                _logger.LogWarning("Datos incompletos o inválidos para la orden: {@Request}", request);
                 throw new BadRequestException("Datos de la orden inválidos o incompletos.");
             }
 
-            // Validar que ningún ProductId sea Guid.Empty para evitar error de diccionario
             if (request.OrderItems.Any(i => i.ProductId == Guid.Empty))
             {
+                _logger.LogWarning("Se encontró uno o más ProductId vacíos en la orden.");
                 throw new BadRequestException("Uno o más productos tienen Id vacío.");
             }
 
-            // Obtener productos que existen en la base
             var productIds = request.OrderItems.Select(i => i.ProductId).Distinct().ToList();
             var productsList = await _repository.GetFiltered<Product>(p => productIds.Contains(p.Id));
 
             if (productsList == null || productsList.Count() != productIds.Count)
             {
+                _logger.LogWarning("La orden contiene uno o más productos inexistentes.");
                 throw new BadRequestException("Uno o más productos no existen.");
             }
 
             var products = productsList.ToDictionary(p => p.Id);
 
-            // Crear ítems de orden usando constructor con validaciones internas (cantidad, stock)
             var orderItems = request.OrderItems.Select(i =>
             {
                 var product = products[i.ProductId];
                 return new OrderItem(product, product.Id, i.Quantity, product.CurrentPrice);
             }).ToList();
 
-            // Descontar stock
             foreach (var item in orderItems)
             {
                 var product = products[item.ProductId];
@@ -68,11 +69,9 @@ namespace Dsw2025Tpi.Application.Services
                 await _repository.Update(product);
             }
 
-            // Fecha local Argentina
             var argentinaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Argentina Standard Time");
             var fechaLocalArgentina = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, argentinaTimeZone);
 
-            // Crear orden
             var order = new Order(request.CustomerId, request.ShippingAddress, request.BillingAddress, orderItems)
             {
                 Date = fechaLocalArgentina
@@ -80,7 +79,8 @@ namespace Dsw2025Tpi.Application.Services
 
             await _repository.Add(order);
 
-            // Preparar respuesta
+            _logger.LogInformation("Orden creada exitosamente con ID: {OrderId}", order.Id);
+
             var response = new OrderModel.Response(
                 Id: order.Id,
                 CustomerId: order.CustomerId ?? Guid.Empty,
@@ -106,29 +106,30 @@ namespace Dsw2025Tpi.Application.Services
             return response;
         }
 
-
-
-        // Método para obtener una lista paginada de órdenes, filtrando opcionalmente por estado y cliente
         public async Task<List<OrderModel.Response>> GetOrders(OrderStatus? status, Guid? customerId, int pageNumber, int pageSize)
         {
-            // Construir filtro dinámico según parámetros recibidos
+            _logger.LogInformation("Obteniendo órdenes. Filtros - Estado: {Status}, Cliente: {CustomerId}, Página: {Page}, Tamaño: {Size}",
+                status?.ToString() ?? "Todos", customerId?.ToString() ?? "Todos", pageNumber, pageSize);
+
             Expression<Func<Order, bool>> filter = o =>
                 (!status.HasValue || o.Status == status.Value) &&
                 (!customerId.HasValue || o.CustomerId == customerId.Value);
 
-            // Traer órdenes de base de datos incluyendo sus ítems
             var allOrders = await _repository.GetFiltered<Order>(filter, "Items");
 
-            if (allOrders == null)
+            if (allOrders == null || !allOrders.Any())
+            {
+                _logger.LogInformation("No se encontraron órdenes con los filtros aplicados.");
                 return new List<OrderModel.Response>();
+            }
 
-            // Aplicar paginación manual (skip y take)
             var pagedOrders = allOrders
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
 
-            // Obtener todos los IDs de productos de las órdenes paginadas para obtener datos completos
+            _logger.LogInformation("Se encontraron {Count} órdenes en la página {Page}", pagedOrders.Count, pageNumber);
+
             var productIds = pagedOrders
                 .SelectMany(o => o.Items)
                 .Select(i => i.ProductId)
@@ -138,7 +139,6 @@ namespace Dsw2025Tpi.Application.Services
             var productsList = await _repository.GetFiltered<Product>(p => productIds.Contains(p.Id));
             var products = productsList.ToDictionary(p => p.Id);
 
-            // Construir la lista de respuestas mapeando cada orden con sus detalles y productos
             var responseList = pagedOrders.Select(order => new OrderModel.Response(
                 Id: order.Id,
                 CustomerId: order.CustomerId ?? Guid.Empty,
@@ -164,56 +164,66 @@ namespace Dsw2025Tpi.Application.Services
             return responseList;
         }
 
-        // Obtener una orden completa por su ID, incluyendo los ítems y los productos relacionados
         public async Task<Order?> GetOrderById(Guid Id)
         {
+            _logger.LogInformation("Buscando orden por ID: {Id}", Id);
+
             var orders = await _repository.GetFiltered<Order>(
                 o => o.Id == Id,
                 include: new[] { "Items", "Items.Product" }
             );
 
             var order = orders.FirstOrDefault();
+
             if (order == null)
             {
+                _logger.LogWarning("No se encontró ninguna orden con el ID: {Id}", Id);
                 throw new NotFoundException($"No se encontró la orden con el ID {Id}");
             }
 
+            _logger.LogInformation("Orden encontrada con ID: {Id}", Id);
             return order;
         }
 
-        // Actualiza el estado de una orden y devuelve su información actualizada
         public async Task<OrderModel.Response?> UpdateOrderStatus(Guid id, string newStatusText)
         {
-            // Traer la orden con los ítems para validar y actualizar
+            _logger.LogInformation("Actualizando estado de la orden {Id} a '{NewStatus}'", id, newStatusText);
+
             var order = await _repository.GetById<Order>(id, "Items");
-
             if (order == null)
+            {
+                _logger.LogWarning("No se encontró la orden con ID: {Id} para actualizar estado", id);
                 throw new NotFoundException("La orden solicitada no existe");
+            }
 
-            // Validar que no sea un número (para evitar casos como "1", "2", etc.)
             if (int.TryParse(newStatusText, out _))
-                throw new BadRequestException("No se permite ingresar un número como estado. Usá uno de los siguientes: PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELED.");
+            {
+                _logger.LogWarning("Estado inválido (numérico) para la orden: '{NewStatus}'", newStatusText);
+                throw new BadRequestException("No se permite ingresar un número como estado. Usá uno válido.");
+            }
 
-            // Validar que el string sea un valor definido del enum (case-insensitive)
             if (!Enum.TryParse<OrderStatus>(newStatusText, true, out var newStatus) ||
                 !Enum.GetNames(typeof(OrderStatus)).Contains(newStatus.ToString()))
             {
-                throw new BadRequestException("Estado de orden inválido. Debe ser uno de: PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELED.");
+                _logger.LogWarning("Estado inválido: '{NewStatus}' no es parte del enum OrderStatus", newStatusText);
+                throw new BadRequestException("Estado de orden inválido. Debe ser uno válido.");
             }
 
-            // Solo actualizar si el estado es diferente (idempotencia)
             if (order.Status != newStatus)
             {
                 order.Status = newStatus;
                 await _repository.Update(order);
+                _logger.LogInformation("Estado de orden actualizado correctamente a: {NewStatus}", newStatus);
+            }
+            else
+            {
+                _logger.LogInformation("El estado de la orden ya es: {NewStatus}, no se realizaron cambios.", newStatus);
             }
 
-            // Obtener productos involucrados para devolver datos completos
             var productIds = order.Items.Select(i => i.ProductId).Distinct().ToList();
             var productsList = await _repository.GetFiltered<Product>(p => productIds.Contains(p.Id));
             var products = productsList.ToDictionary(p => p.Id);
 
-            // Construir y devolver la respuesta
             return new OrderModel.Response(
                 Id: order.Id,
                 CustomerId: order.CustomerId ?? Guid.Empty,
@@ -236,8 +246,6 @@ namespace Dsw2025Tpi.Application.Services
                 }).ToList()
             );
         }
-
-
     }
 }
 

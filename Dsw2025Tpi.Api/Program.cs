@@ -1,5 +1,4 @@
-
-using Dsw2025Tpi.Api.Middleware;
+using Dsw2025Tpi.Api.Helpers;
 using Dsw2025Tpi.Application.Services;
 using Dsw2025Tpi.Data;
 using Dsw2025Tpi.Data.Helpers;
@@ -11,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog.Extensions.Logging;
 using System.Text;
 
 namespace Dsw2025Tpi.Api;
@@ -20,6 +20,34 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
+        var path = builder.Configuration.GetSection("LogPath").Value;
+
+        builder.Services.AddLogging(config =>
+        {
+            config.ClearProviders();
+
+            config.AddConsole(consoleOptions =>
+            {
+                consoleOptions.TimestampFormat = "[dd-MM-yyyy]-[HH:mm:ss] ";
+                consoleOptions.IncludeScopes = true; // Si usas scopes y quieres verlos
+                consoleOptions.Format = Microsoft.Extensions.Logging.Console.ConsoleLoggerFormat.Systemd;
+                // Opciones: Default, Systemd, Json
+            });
+
+            config.AddFile(
+                path,
+                outputTemplate: "{Timestamp:[dd-MM-yyyy]-[HH:mm:ss.fff]} [{Level:u3}] {SourceContext} {Message:lj}{NewLine}{Exception}",
+                minimumLevel: LogLevel.Debug,
+                levelOverrides: new Dictionary<string, LogLevel>
+                {
+                    ["Microsoft"] = LogLevel.Information,
+                    ["Microsoft.AspNetCore"] = LogLevel.Warning,
+                    ["Microsoft.EntityFrameworkCore"] = LogLevel.Warning
+                }
+            );
+        });
+
 
         // Agrega servicios básicos para controladores
         builder.Services.AddControllers();

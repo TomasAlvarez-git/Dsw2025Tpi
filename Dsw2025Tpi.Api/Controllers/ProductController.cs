@@ -43,7 +43,7 @@ namespace Dsw2025Tpi.Api.Controllers
         // === GET: api/products ===
         // Devuelve todos los productos (solo Admin)
         [HttpGet()]
-        [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetProducts()
         {
             // Obtiene la lista de productos
@@ -69,7 +69,7 @@ namespace Dsw2025Tpi.Api.Controllers
         // === GET: api/products/{id} ===
         // Devuelve un producto por su ID (solo Admin)
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetProductBySku(Guid id)
         {
             // Busca el producto por su ID

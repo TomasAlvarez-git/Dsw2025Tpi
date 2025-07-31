@@ -1,0 +1,23 @@
+[31-07-2025]-[14:43:21.748] [INF] Microsoft.Hosting.Lifetime Now listening on: https://localhost:7138
+[31-07-2025]-[14:43:21.751] [INF] Microsoft.Hosting.Lifetime Now listening on: http://localhost:5142
+[31-07-2025]-[14:43:22.239] [INF] Microsoft.Hosting.Lifetime Application started. Press Ctrl+C to shut down.
+[31-07-2025]-[14:43:22.243] [INF] Microsoft.Hosting.Lifetime Hosting environment: Development
+[31-07-2025]-[14:43:22.243] [INF] Microsoft.Hosting.Lifetime Content root path: C:\Users\tomas\OneDrive\Escritorio\UTN\3ER AÑO\Desarrollo de software\1er Cuat (BackEnd)\Unidad 2\TPI\Dsw2025Tpi\Dsw2025Tpi.Api
+[31-07-2025]-[14:44:23.499] [INF] Microsoft.Hosting.Lifetime Now listening on: https://localhost:7138
+[31-07-2025]-[14:44:23.503] [INF] Microsoft.Hosting.Lifetime Now listening on: http://localhost:5142
+[31-07-2025]-[14:44:23.731] [INF] Microsoft.Hosting.Lifetime Application started. Press Ctrl+C to shut down.
+[31-07-2025]-[14:44:23.740] [INF] Microsoft.Hosting.Lifetime Hosting environment: Development
+[31-07-2025]-[14:44:23.740] [INF] Microsoft.Hosting.Lifetime Content root path: C:\Users\tomas\OneDrive\Escritorio\UTN\3ER AÑO\Desarrollo de software\1er Cuat (BackEnd)\Unidad 2\TPI\Dsw2025Tpi\Dsw2025Tpi.Api
+[31-07-2025]-[14:44:28.601] [INF] Microsoft.Hosting.Lifetime Application is shutting down...
+[31-07-2025]-[14:48:58.143] [INF] Microsoft.Hosting.Lifetime Now listening on: https://localhost:7138
+[31-07-2025]-[14:48:58.149] [INF] Microsoft.Hosting.Lifetime Now listening on: http://localhost:5142
+[31-07-2025]-[14:48:58.341] [INF] Microsoft.Hosting.Lifetime Application started. Press Ctrl+C to shut down.
+[31-07-2025]-[14:48:58.342] [INF] Microsoft.Hosting.Lifetime Hosting environment: Development
+[31-07-2025]-[14:48:58.342] [INF] Microsoft.Hosting.Lifetime Content root path: C:\Users\tomas\OneDrive\Escritorio\UTN\3ER AÑO\Desarrollo de software\1er Cuat (BackEnd)\Unidad 2\TPI\Dsw2025Tpi\Dsw2025Tpi.Api
+[31-07-2025]-[14:49:48.053] [INF] Microsoft.Hosting.Lifetime Application is shutting down...
+[31-07-2025]-[14:50:15.955] [INF] Microsoft.Hosting.Lifetime Now listening on: https://localhost:7138
+[31-07-2025]-[14:50:15.959] [INF] Microsoft.Hosting.Lifetime Now listening on: http://localhost:5142
+[31-07-2025]-[14:50:16.101] [INF] Microsoft.Hosting.Lifetime Application started. Press Ctrl+C to shut down.
+[31-07-2025]-[14:50:16.102] [INF] Microsoft.Hosting.Lifetime Hosting environment: Development
+[31-07-2025]-[14:50:16.102] [INF] Microsoft.Hosting.Lifetime Content root path: C:\Users\tomas\OneDrive\Escritorio\UTN\3ER AÑO\Desarrollo de software\1er Cuat (BackEnd)\Unidad 2\TPI\Dsw2025Tpi\Dsw2025Tpi.Api
+[31-07-2025]-[14:50:33.630] [INF] Microsoft.Hosting.Lifetime Application is shutting down...

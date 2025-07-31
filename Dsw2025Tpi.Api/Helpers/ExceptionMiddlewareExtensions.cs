@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Dsw2025Tpi.Api.Middleware;
+using Microsoft.AspNetCore.Builder;
 
-namespace Dsw2025Tpi.Api.Middleware
+namespace Dsw2025Tpi.Api.Helpers
 {
     public static class ExceptionMiddlewareExtensions
     {
