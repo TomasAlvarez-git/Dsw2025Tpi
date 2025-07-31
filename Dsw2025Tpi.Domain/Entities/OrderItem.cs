@@ -6,6 +6,8 @@ namespace Dsw2025Tpi.Domain.Entities
     // Clase que representa un ítem o línea dentro de una orden
     public class OrderItem : EntityBase
     {
+        private Product product;
+
         // Cantidad de unidades del producto en este ítem
         public int Quantity { get; set; }
 
@@ -31,12 +33,30 @@ namespace Dsw2025Tpi.Domain.Entities
         public OrderItem() { }
 
         // Constructor que inicializa un ítem con producto, cantidad y precio unitario
-        public OrderItem(Guid productId, int quantity, decimal unitPrice)
+        public OrderItem(Product product, Guid productId, int quantity, decimal unitPrice)
         {
+            if (productId == Guid.Empty)
+                throw new ArgumentNullException(nameof(productId), "El Id del producto no puede estar vacío.");
+
+            if (productId == Guid.Empty) 
+                throw new ArgumentNullException(nameof(productId), "El Id del producto no puede estar vacio");
+
+            if (quantity <= 0)
+                throw new ArgumentOutOfRangeException(nameof(quantity), "La cantidad debe ser mayor a 0");
+
+            if (!product.StockControl(quantity))
+                throw new ApplicationException("No hay stock suficiente");
+
             ProductId = productId;
             Quantity = quantity;
             UnitPrice = unitPrice;
             Subtotal = quantity * unitPrice; // Calcula el subtotal al crear el ítem
+        }
+
+        public OrderItem(Product product, int quantity)
+        {
+            this.product = product;
+            Quantity = quantity;
         }
     }
 }

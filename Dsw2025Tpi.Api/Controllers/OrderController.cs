@@ -30,6 +30,7 @@ namespace Dsw2025Tpi.Api.Controllers
         // Endpoint para que un cliente cree una nueva orden
         [HttpPost()]
         [Authorize(Roles = "Customer")]
+        [AllowAnonymous]
         public async Task<IActionResult> AddOrder([FromBody] OrderModel.Request request)
         {
             // Crea una orden y la guarda en base de datos

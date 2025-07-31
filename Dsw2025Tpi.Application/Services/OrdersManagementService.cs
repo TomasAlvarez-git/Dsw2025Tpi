@@ -26,9 +26,9 @@ namespace Dsw2025Tpi.Application.Services
         // Método para agregar una nueva orden, validando datos, stock y actualizando inventario
         public async Task<OrderModel.Response> AddOrder(OrderModel.Request request)
         {
-            // Validación básica de que los datos no sean nulos o vacíos
+            // Validación básica de la orden
             if (request == null ||
-                request.OrderItems == null! ||
+                request.OrderItems == null ||
                 request.OrderItems.Count == 0 ||
                 string.IsNullOrWhiteSpace(request.ShippingAddress) ||
                 string.IsNullOrWhiteSpace(request.BillingAddress))
@@ -36,69 +36,57 @@ namespace Dsw2025Tpi.Application.Services
                 throw new BadRequestException("Datos de la orden inválidos o incompletos.");
             }
 
-            // Extraer IDs únicos de productos de la orden
-            var productIds = request.OrderItems.Select(i => i.ProductId).Distinct().ToList();
+            // Validar que ningún ProductId sea Guid.Empty para evitar error de diccionario
+            if (request.OrderItems.Any(i => i.ProductId == Guid.Empty))
+            {
+                throw new BadRequestException("Uno o más productos tienen Id vacío.");
+            }
 
-            // Traer todos los productos involucrados en la orden desde la base de datos
+            // Obtener productos que existen en la base
+            var productIds = request.OrderItems.Select(i => i.ProductId).Distinct().ToList();
             var productsList = await _repository.GetFiltered<Product>(p => productIds.Contains(p.Id));
 
-            // Validar que todos los productos solicitados existan
             if (productsList == null || productsList.Count() != productIds.Count)
             {
                 throw new BadRequestException("Uno o más productos no existen.");
             }
 
-            // Convertir lista de productos en diccionario para acceso rápido por ID
             var products = productsList.ToDictionary(p => p.Id);
 
-            // Verificar que haya stock suficiente para cada producto solicitado
-            foreach (var item in request.OrderItems)
+            // Crear ítems de orden usando constructor con validaciones internas (cantidad, stock)
+            var orderItems = request.OrderItems.Select(i =>
             {
-                var product = products[item.ProductId];
-                if (!product.StockQuantity.HasValue || item.Quantity > product.StockQuantity.Value)
-                {
-                    throw new BadRequestException($"Stock insuficiente para el producto '{product.Name}' (ID: {product.Id}). Disponible: {product.StockQuantity ?? 0}, solicitado: {item.Quantity}.");
-                }
-            }
+                var product = products[i.ProductId];
+                return new OrderItem(product, product.Id, i.Quantity, product.CurrentPrice);
+            }).ToList();
 
-            // Descontar la cantidad pedida de stock para cada producto y actualizar en base de datos
-            foreach (var item in request.OrderItems)
+            // Descontar stock
+            foreach (var item in orderItems)
             {
                 var product = products[item.ProductId];
                 product.StockQuantity -= item.Quantity;
-                await _repository.Update(product); // Guardar cambios para cada producto
+                await _repository.Update(product);
             }
 
-            // Crear los ítems de la orden con los datos necesarios (Producto, cantidad, precio)
-            var orderItems = request.OrderItems.Select(i =>
-            {
-                var orderItem = new OrderItem(i.ProductId, i.Quantity, i.CurrentUnitPrice);
-                return orderItem;
-            }).ToList();
-
-            // Calcular el total de la orden sumando el subtotal de cada ítem
-            var orderTotal = orderItems.Sum(oi => oi.Quantity * oi.UnitPrice);
-
-            // Obtener la hora local de Argentina
+            // Fecha local Argentina
             var argentinaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Argentina Standard Time");
             var fechaLocalArgentina = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, argentinaTimeZone);
 
-            // Crear la entidad orden con cliente, direcciones, los ítems y asignar la fecha local Argentina
+            // Crear orden
             var order = new Order(request.CustomerId, request.ShippingAddress, request.BillingAddress, orderItems)
             {
                 Date = fechaLocalArgentina
             };
 
-            // Agregar la orden al repositorio (persistencia)
             await _repository.Add(order);
 
-            // Construir y devolver el objeto de respuesta con los datos de la orden creada
+            // Preparar respuesta
             var response = new OrderModel.Response(
                 Id: order.Id,
                 CustomerId: order.CustomerId ?? Guid.Empty,
                 ShippingAddress: order.ShippingAddress,
                 BillingAddress: order.BillingAddress,
-                Date : order.Date,
+                Date: order.Date,
                 TotalAmount: order.TotalAmount,
                 Status: order.Status.ToString(),
                 OrderItems: order.Items.Select(oi =>
@@ -117,6 +105,8 @@ namespace Dsw2025Tpi.Application.Services
 
             return response;
         }
+
+
 
         // Método para obtener una lista paginada de órdenes, filtrando opcionalmente por estado y cliente
         public async Task<List<OrderModel.Response>> GetOrders(OrderStatus? status, Guid? customerId, int pageNumber, int pageSize)

@@ -40,9 +40,22 @@ namespace Dsw2025Tpi.Domain.Entities
             InternalCode = internalCode;
             Name = name;
             Description = description;
-            CurrentPrice = currentPrice;
-            StockQuantity = stockQuantity;
+            CurrentPrice = currentPrice <= 0 ?
+                throw new ArgumentOutOfRangeException(nameof(currentPrice), "El precio no debe ser menor o igual a 0") : currentPrice;
+            StockQuantity = stockQuantity <= 0 ?
+                throw new ArgumentOutOfRangeException(nameof(stockQuantity), "El precio no debe ser menor o igual a 0") : stockQuantity;
             IsActive = true; // Por defecto el producto está activo
+        }
+
+        public bool StockControl (int quantity)
+        {
+            if (quantity < StockQuantity)
+            {
+                StockQuantity -= quantity;
+                return true;
+            }
+
+            return false;
         }
     }
 }

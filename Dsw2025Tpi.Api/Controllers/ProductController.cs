@@ -30,6 +30,7 @@ namespace Dsw2025Tpi.Api.Controllers
         // Agrega un nuevo producto (solo rol Admin)
         [HttpPost()]
         [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         public async Task<IActionResult> AddProduct([FromBody] ProductModel.Request request)
         {
             // Agrega el producto usando el servicio
