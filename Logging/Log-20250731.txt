@@ -21,3 +21,34 @@
 [31-07-2025]-[14:50:16.102] [INF] Microsoft.Hosting.Lifetime Hosting environment: Development
 [31-07-2025]-[14:50:16.102] [INF] Microsoft.Hosting.Lifetime Content root path: C:\Users\tomas\OneDrive\Escritorio\UTN\3ER AÑO\Desarrollo de software\1er Cuat (BackEnd)\Unidad 2\TPI\Dsw2025Tpi\Dsw2025Tpi.Api
 [31-07-2025]-[14:50:33.630] [INF] Microsoft.Hosting.Lifetime Application is shutting down...
+[31-07-2025]-[15:42:41.953] [INF] Microsoft.Hosting.Lifetime Now listening on: https://localhost:7138
+[31-07-2025]-[15:42:41.957] [INF] Microsoft.Hosting.Lifetime Now listening on: http://localhost:5142
+[31-07-2025]-[15:42:42.376] [INF] Microsoft.Hosting.Lifetime Application started. Press Ctrl+C to shut down.
+[31-07-2025]-[15:42:42.377] [INF] Microsoft.Hosting.Lifetime Hosting environment: Development
+[31-07-2025]-[15:42:42.377] [INF] Microsoft.Hosting.Lifetime Content root path: C:\Users\tomas\OneDrive\Escritorio\UTN\3ER AÑO\Desarrollo de software\1er Cuat (BackEnd)\Unidad 2\TPI\Dsw2025Tpi\Dsw2025Tpi.Api
+[31-07-2025]-[15:42:52.003] [INF] Microsoft.Hosting.Lifetime Application is shutting down...
+[31-07-2025]-[15:43:12.680] [INF] Microsoft.Hosting.Lifetime Now listening on: https://localhost:7138
+[31-07-2025]-[15:43:12.682] [INF] Microsoft.Hosting.Lifetime Now listening on: http://localhost:5142
+[31-07-2025]-[15:43:12.830] [INF] Microsoft.Hosting.Lifetime Application started. Press Ctrl+C to shut down.
+[31-07-2025]-[15:43:12.831] [INF] Microsoft.Hosting.Lifetime Hosting environment: Development
+[31-07-2025]-[15:43:12.831] [INF] Microsoft.Hosting.Lifetime Content root path: C:\Users\tomas\OneDrive\Escritorio\UTN\3ER AÑO\Desarrollo de software\1er Cuat (BackEnd)\Unidad 2\TPI\Dsw2025Tpi\Dsw2025Tpi.Api
+[31-07-2025]-[15:43:19.181] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Obteniendo lista de todos los productos
+[31-07-2025]-[15:43:22.123] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Se encontraron 3 productos
+[31-07-2025]-[15:43:59.905] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Buscando producto por ID: "b309a760-2927-4b87-ac95-7d0e6e2822a2"
+[31-07-2025]-[15:44:00.145] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Producto encontrado: string
+[31-07-2025]-[15:44:38.672] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Buscando producto por ID: "78eb8127-9728-4d22-9169-54d13b831241"
+[31-07-2025]-[15:44:38.692] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Producto encontrado: SKU001
+[31-07-2025]-[15:45:05.247] [INF] Microsoft.Hosting.Lifetime Application is shutting down...
+[31-07-2025]-[16:35:29.409] [INF] Microsoft.Hosting.Lifetime Now listening on: https://localhost:7138
+[31-07-2025]-[16:35:29.413] [INF] Microsoft.Hosting.Lifetime Now listening on: http://localhost:5142
+[31-07-2025]-[16:35:29.561] [INF] Microsoft.Hosting.Lifetime Application started. Press Ctrl+C to shut down.
+[31-07-2025]-[16:35:29.561] [INF] Microsoft.Hosting.Lifetime Hosting environment: Development
+[31-07-2025]-[16:35:29.562] [INF] Microsoft.Hosting.Lifetime Content root path: C:\Users\tomas\OneDrive\Escritorio\UTN\3ER AÑO\Desarrollo de software\1er Cuat (BackEnd)\Unidad 2\TPI\Dsw2025Tpi\Dsw2025Tpi.Api
+[31-07-2025]-[16:36:02.403] [INF] Microsoft.Hosting.Lifetime Application is shutting down...
+[31-07-2025]-[16:36:09.423] [INF] Microsoft.Hosting.Lifetime Now listening on: https://localhost:7138
+[31-07-2025]-[16:36:09.425] [INF] Microsoft.Hosting.Lifetime Now listening on: http://localhost:5142
+[31-07-2025]-[16:36:09.540] [INF] Microsoft.Hosting.Lifetime Application started. Press Ctrl+C to shut down.
+[31-07-2025]-[16:36:09.543] [INF] Microsoft.Hosting.Lifetime Hosting environment: Development
+[31-07-2025]-[16:36:09.543] [INF] Microsoft.Hosting.Lifetime Content root path: C:\Users\tomas\OneDrive\Escritorio\UTN\3ER AÑO\Desarrollo de software\1er Cuat (BackEnd)\Unidad 2\TPI\Dsw2025Tpi\Dsw2025Tpi.Api
+[31-07-2025]-[16:36:58.009] [INF] Dsw2025Tpi.Application.Services.OrdersManagementService Buscando orden por ID: "bd7901d0-0aba-425f-af8c-a91e54ea492d"
+[31-07-2025]-[16:36:59.581] [INF] Dsw2025Tpi.Application.Services.OrdersManagementService Orden encontrada con ID: "bd7901d0-0aba-425f-af8c-a91e54ea492d"

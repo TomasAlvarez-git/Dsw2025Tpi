@@ -1,4 +1,5 @@
 using Dsw2025Tpi.Api.Helpers;
+using Dsw2025Tpi.Application.Helpers;
 using Dsw2025Tpi.Application.Services;
 using Dsw2025Tpi.Data;
 using Dsw2025Tpi.Data.Helpers;
@@ -153,7 +154,9 @@ public class Program
         // Inyección de dependencias para servicios y repositorios
         builder.Services.AddScoped<IRepository, EfRepository>(); // Patrón repositorio
         builder.Services.AddTransient<ProductsManagementService>();
+        builder.Services.AddTransient<ProductsManagmentServiceExtensions>();
         builder.Services.AddTransient<OrdersManagementService>();
+        builder.Services.AddTransient<OrdersManagementServiceExtensions>();
 
         // Política CORS para permitir frontend en localhost:3000
         builder.Services.AddCors(options =>
@@ -179,7 +182,7 @@ public class Program
         // Redirección HTTPS obligatoria
         app.UseHttpsRedirection();
 
-        // Aplicar la política de CORS configurada anteriormente
+       // Aplicar la política de CORS configurada anteriormente
         app.UseCors("PermitirFrontend");
 
         // Habilita autenticación (validación de tokens)

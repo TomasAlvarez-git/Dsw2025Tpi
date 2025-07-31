@@ -10,6 +10,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using Dsw2025Tpi.Application.Helpers;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Dsw2025Tpi.Application.Services
@@ -18,41 +19,25 @@ namespace Dsw2025Tpi.Application.Services
     {
         private readonly IRepository _repository;
         private readonly ILogger<OrdersManagementService> _logger;
+        private readonly OrdersManagementServiceExtensions _extensions;
 
-        public OrdersManagementService(IRepository repository, ILogger<OrdersManagementService> logger)
+        public OrdersManagementService(IRepository repository, ILogger<OrdersManagementService> logger,
+            OrdersManagementServiceExtensions extensions)
         {
             _repository = repository;
             _logger = logger;
+            _extensions = extensions;
         }
 
         public async Task<OrderModel.Response> AddOrder(OrderModel.Request request)
         {
             _logger.LogInformation("Iniciando creación de orden para cliente {CustomerId}", request.CustomerId);
 
-            if (request == null ||
-                request.OrderItems == null ||
-                request.OrderItems.Count == 0 ||
-                string.IsNullOrWhiteSpace(request.ShippingAddress) ||
-                string.IsNullOrWhiteSpace(request.BillingAddress))
-            {
-                _logger.LogWarning("Datos incompletos o inválidos para la orden: {@Request}", request);
-                throw new BadRequestException("Datos de la orden inválidos o incompletos.");
-            }
+            _extensions.ValidateOrderRequest(request);
 
-            if (request.OrderItems.Any(i => i.ProductId == Guid.Empty))
-            {
-                _logger.LogWarning("Se encontró uno o más ProductId vacíos en la orden.");
-                throw new BadRequestException("Uno o más productos tienen Id vacío.");
-            }
+            _extensions.ValidateEmptyProducts(request);
 
-            var productIds = request.OrderItems.Select(i => i.ProductId).Distinct().ToList();
-            var productsList = await _repository.GetFiltered<Product>(p => productIds.Contains(p.Id));
-
-            if (productsList == null || productsList.Count() != productIds.Count)
-            {
-                _logger.LogWarning("La orden contiene uno o más productos inexistentes.");
-                throw new BadRequestException("Uno o más productos no existen.");
-            }
+            var productsList = await _extensions.ValidateProductsInList(request);
 
             var products = productsList.ToDictionary(p => p.Id);
 
@@ -69,12 +54,11 @@ namespace Dsw2025Tpi.Application.Services
                 await _repository.Update(product);
             }
 
-            var argentinaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Argentina Standard Time");
-            var fechaLocalArgentina = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, argentinaTimeZone);
+            var fecLocArg = _extensions.GetDateArgentinean();
 
             var order = new Order(request.CustomerId, request.ShippingAddress, request.BillingAddress, orderItems)
             {
-                Date = fechaLocalArgentina
+                Date = fecLocArg
             };
 
             await _repository.Add(order);
@@ -173,13 +157,7 @@ namespace Dsw2025Tpi.Application.Services
                 include: new[] { "Items", "Items.Product" }
             );
 
-            var order = orders.FirstOrDefault();
-
-            if (order == null)
-            {
-                _logger.LogWarning("No se encontró ninguna orden con el ID: {Id}", Id);
-                throw new NotFoundException($"No se encontró la orden con el ID {Id}");
-            }
+            var order = await _extensions.ValidateOrderNull(Id, orders);
 
             _logger.LogInformation("Orden encontrada con ID: {Id}", Id);
             return order;

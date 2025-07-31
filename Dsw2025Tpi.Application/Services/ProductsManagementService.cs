@@ -8,6 +8,7 @@ using Dsw2025Tpi.Application.Exceptions;
 using Dsw2025Tpi.Domain.Entities;
 using Dsw2025Tpi.Domain.Interfaces;
 using Microsoft.Extensions.Logging;
+using Dsw2025Tpi.Application.Helpers;
 
 namespace Dsw2025Tpi.Application.Services
 {
@@ -15,31 +16,22 @@ namespace Dsw2025Tpi.Application.Services
     {
         private readonly IRepository _repository;
         private readonly ILogger<ProductsManagementService> _logger;
+        private readonly ProductsManagmentServiceExtensions _extensions;
 
-        public ProductsManagementService(IRepository repository, ILogger<ProductsManagementService> logger)
+        public ProductsManagementService(IRepository repository, ILogger<ProductsManagementService> logger, ProductsManagmentServiceExtensions extensions)
         {
             _repository = repository;
             _logger = logger;
+            _extensions = extensions;
         }
 
         public async Task<ProductModel.Response> AddProduct(ProductModel.Request request)
         {
             _logger.LogInformation("Iniciando creación de producto con SKU: {Sku}", request.Sku);
 
-            if (string.IsNullOrWhiteSpace(request.Sku) ||
-                string.IsNullOrWhiteSpace(request.Name) ||
-                request.CurrentPrice < 0 || request.StockQuantity < 0)
-            {
-                _logger.LogWarning("Datos inválidos para producto: {@Request}", request);
-                throw new BadRequestException("Valores para el producto no válidos");
-            }
+            _extensions.ValidateProductRequest(request);
 
-            var exist = await _repository.First<Product>(p => p.Sku == request.Sku);
-            if (exist != null)
-            {
-                _logger.LogWarning("Intento de duplicación de producto con SKU existente: {Sku}", request.Sku);
-                throw new DuplicatedEntityException($"Ya existe un producto con el Sku {request.Sku}");
-            }
+            _extensions.ValidateDuplicatedProduct(request);
 
             var product = new Product(request.Sku, request.InternalCode, request.Name, request.Description, request.CurrentPrice, request.StockQuantity);
             await _repository.Add(product);
@@ -55,11 +47,7 @@ namespace Dsw2025Tpi.Application.Services
 
             var products = await _repository.GetAll<Product>();
 
-            if (products == null || !products.Any())
-            {
-                _logger.LogWarning("No hay productos disponibles en la base de datos");
-                throw new NoContentException("No hay productos disponibles en la base de datos.");
-            }
+            _extensions.ValidateProductsNull(products);
 
             _logger.LogInformation("Se encontraron {Count} productos", products.Count());
             return products;
@@ -69,12 +57,7 @@ namespace Dsw2025Tpi.Application.Services
         {
             _logger.LogInformation("Buscando producto por ID: {Id}", id);
 
-            var product = await _repository.GetById<Product>(id);
-            if (product == null)
-            {
-                _logger.LogWarning("Producto no encontrado con ID: {Id}", id);
-                throw new NotFoundException("El producto solicitado no existe.");
-            }
+            var product = await _extensions.GetProductOrThrow(id);
 
             _logger.LogInformation("Producto encontrado: {Sku}", product.Sku);
             return product;
@@ -84,20 +67,11 @@ namespace Dsw2025Tpi.Application.Services
         {
             _logger.LogInformation("Actualizando producto con ID: {Id}", Id);
 
-            if (string.IsNullOrWhiteSpace(request.Sku) ||
-                string.IsNullOrWhiteSpace(request.Name) ||
-                request.CurrentPrice < 0 || request.StockQuantity < 0)
-            {
-                _logger.LogWarning("Datos inválidos para actualización: {@Request}", request);
-                throw new BadRequestException("Los datos enviados no son válidos.");
-            }
+            _extensions.ValidateProductRequest(request);
 
             var product = await _repository.GetById<Product>(Id);
-            if (product == null)
-            {
-                _logger.LogWarning("Producto no encontrado para actualizar. ID: {Id}", Id);
-                throw new NotFoundException($"No se encontro un producto con el ID: {Id}.");
-            }
+            
+            _extensions.ValidateProductNull(product);
 
             product.Sku = request.Sku;
             product.Name = request.Name;
@@ -110,15 +84,7 @@ namespace Dsw2025Tpi.Application.Services
 
             _logger.LogInformation("Producto actualizado correctamente. SKU: {Sku}", product.Sku);
 
-            return new ProductModel.Response(
-                product.Sku,
-                product.Name,
-                product.InternalCode,
-                product.Description,
-                product.CurrentPrice,
-                product.StockQuantity,
-                product.IsActive
-            );
+            return _extensions.ToResponse(product);
         }
 
         public async Task<bool> DisableProduct(Guid Id)
@@ -126,11 +92,8 @@ namespace Dsw2025Tpi.Application.Services
             _logger.LogInformation("Desactivando producto con ID: {Id}", Id);
 
             var product = await _repository.GetById<Product>(Id);
-            if (product == null)
-            {
-                _logger.LogWarning("Producto no encontrado para desactivar. ID: {Id}", Id);
-                throw new NotFoundException($"No se encontro un producto con el Id: {Id}.");
-            }
+            
+            _extensions.ValidateProductNull(product);
 
             product.IsActive = false;
             await _repository.Update(product);

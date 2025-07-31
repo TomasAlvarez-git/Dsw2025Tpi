@@ -58,6 +58,7 @@ namespace Dsw2025Tpi.Api.Controllers
         // Endpoint para obtener los detalles de una orden por ID
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin, Customer")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetOrderById(Guid id)
         {
             // Busca la orden por su identificador
