@@ -6,6 +6,7 @@ using Dsw2025Tpi.Data.Helpers;
 using Dsw2025Tpi.Data.Repositories;
 using Dsw2025Tpi.Domain.Entities;
 using Dsw2025Tpi.Domain.Interfaces;
+using Dsw2025Tpi.Api.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -22,150 +23,34 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        var path = builder.Configuration.GetSection("LogPath").Value;
-
-        builder.Services.AddLogging(config =>
-        {
-            config.ClearProviders();
-
-            config.AddConsole(consoleOptions =>
-            {
-                consoleOptions.TimestampFormat = "[dd-MM-yyyy]-[HH:mm:ss] ";
-                consoleOptions.IncludeScopes = true; // Si usas scopes y quieres verlos
-                consoleOptions.Format = Microsoft.Extensions.Logging.Console.ConsoleLoggerFormat.Systemd;
-                // Opciones: Default, Systemd, Json
-            });
-
-            config.AddFile(
-                path,
-                outputTemplate: "{Timestamp:[dd-MM-yyyy]-[HH:mm:ss.fff]} [{Level:u3}] {SourceContext} {Message:lj}{NewLine}{Exception}",
-                minimumLevel: LogLevel.Debug,
-                levelOverrides: new Dictionary<string, LogLevel>
-                {
-                    ["Microsoft"] = LogLevel.Information,
-                    ["Microsoft.AspNetCore"] = LogLevel.Warning,
-                    ["Microsoft.EntityFrameworkCore"] = LogLevel.Warning
-                }
-            );
-        });
-
+        builder.Services.AddLoggingService(builder.Configuration); // Configura el servicio de logging
 
         // Agrega servicios básicos para controladores
         builder.Services.AddControllers();
 
         // Agrega servicios para documentar la API (Swagger/OpenAPI)
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen(o =>
-        {
-            // Soluciona conflictos de nombres de clases anidadas en Swagger
-            o.CustomSchemaIds(type => type.FullName.Replace("+", "."));
-            o.SwaggerDoc("v1", new OpenApiInfo
-            {
-                Title = "Dsw2025Tpi",
-                Version = "v1",
-            });
 
-            // Configura esquema de autenticación JWT en Swagger
-            o.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-            {
-                In = ParameterLocation.Header,
-                Name = "Authorization",
-                Description = "Ingrese el token JWT",
-                Type = SecuritySchemeType.ApiKey
-            });
-            o.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                        }
-                    },
-                    Array.Empty<string>()
-                }
-            });
-        });
+        // Configura Swagger para documentar la API y definir el esquema de seguridad
+        builder.Services.AddSwaggerDocumentation();
 
         // Agrega soporte para health checks
         builder.Services.AddHealthChecks();
 
-        // Configuración de Identity con política de contraseña mínima
-        builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
-        {
-            options.Password = new PasswordOptions
-            {
-                RequiredLength = 8
-            };
-        })
-           .AddEntityFrameworkStores<AuthenticateContext>() // Usa AuthenticateContext como fuente de usuarios
-           .AddDefaultTokenProviders();
-
-        // Configura la autenticación JWT
-        var jwtConfig = builder.Configuration.GetSection("Jwt");
-        var keyText = jwtConfig["Key"] ?? throw new ArgumentNullException("JWT Key");
-        var key = Encoding.UTF8.GetBytes(keyText);
-
-        builder.Services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        })
-        .AddJwtBearer(options =>
-        {
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = jwtConfig["Issuer"],
-                ValidAudience = jwtConfig["Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(key)
-            };
-        });
+        // Configura la autenticación y autorización con JWT
+        builder.Services.AddAuthenticationAndAuthorization(builder.Configuration);
 
         // Servicio que genera los tokens JWT
         builder.Services.AddSingleton<JwtTokenService>();
 
-        // Configura el contexto de autenticación
-        builder.Services.AddDbContext<AuthenticateContext>(options =>
-        {
-            options.UseSqlServer(builder.Configuration.GetConnectionString("Dsw2025TpiEntities"));
-        });
-
-        builder.Services.AddAuthorization();
-
-        // Configura el contexto principal con seed (carga inicial de datos desde JSON)
-        builder.Services.AddDbContext<Dsw2025TpiContext>(options =>
-        {
-            options.UseSqlServer(builder.Configuration.GetConnectionString("Dsw2025TpiEntities"));
-            options.UseSeeding((c, t) =>
-            {
-                ((Dsw2025TpiContext)c).Seedwork<Customer>("Sources\\customers.json");
-                ((Dsw2025TpiContext)c).Seedwork<Product>("Sources\\products.json");
-                ((Dsw2025TpiContext)c).Seedwork<Order>("Sources\\orders.json");
-                ((Dsw2025TpiContext)c).Seedwork<OrderItem>("Sources\\orderitems.json");
-            });
-        });
+        // Configuración de la base de datos y el contexto
+        builder.Services.AddDbContexts(builder.Configuration);
 
         // Inyección de dependencias para servicios y repositorios
-        builder.Services.AddScoped<IRepository, EfRepository>(); // Patrón repositorio
-        builder.Services.AddTransient<ProductsManagementService>();
-        builder.Services.AddTransient<ProductsManagmentServiceExtensions>();
-        builder.Services.AddTransient<OrdersManagementService>();
-        builder.Services.AddTransient<OrdersManagementServiceExtensions>();
+        builder.Services.AddAplicationServices();
 
         // Política CORS para permitir frontend en localhost:3000
-        builder.Services.AddCors(options =>
-        {
-            options.AddPolicy("PermitirFrontend", policy =>
-                policy.WithOrigins("http://localhost:3000")
-                      .AllowAnyHeader()
-                      .AllowAnyMethod());
-        });
+        builder.Services.AddCustomCors();
 
         var app = builder.Build();
 
@@ -176,20 +61,8 @@ public class Program
             app.UseSwaggerUI();
         }
 
-        // Middleware para manejo de excepciones globales
-        app.UseExceptionMiddleware();
-
-        // Redirección HTTPS obligatoria
-        app.UseHttpsRedirection();
-
-       // Aplicar la política de CORS configurada anteriormente
-        app.UseCors("PermitirFrontend");
-
-        // Habilita autenticación (validación de tokens)
-        app.UseAuthentication();
-
-        // Habilita autorización (validación de roles y claims)
-        app.UseAuthorization();
+        // Middlewares
+        app.UseDeveloperExceptionPage();
 
         // Mapeo de los controladores a rutas HTTP
         app.MapControllers();
