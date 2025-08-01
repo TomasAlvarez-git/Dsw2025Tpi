@@ -15,12 +15,13 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Dsw2025Tpi.Application.Services
 {
-    public class OrdersManagementService
+    public class OrdersManagementService: IOrdersManagementService
     {
         private readonly IRepository _repository;
         private readonly ILogger<OrdersManagementService> _logger;
         private readonly OrdersManagementServiceExtensions _extensions;
 
+        // Constructor que inyecta el repositorio, el logger y las extensiones
         public OrdersManagementService(IRepository repository, ILogger<OrdersManagementService> logger,
             OrdersManagementServiceExtensions extensions)
         {
@@ -29,6 +30,7 @@ namespace Dsw2025Tpi.Application.Services
             _extensions = extensions;
         }
 
+        // Crea una nueva orden con los productos y datos del cliente
         public async Task<OrderModel.Response> AddOrder(OrderModel.Request request)
         {
             _extensions.ValidateIdCustomer(request);
@@ -36,19 +38,20 @@ namespace Dsw2025Tpi.Application.Services
             _logger.LogInformation("Iniciando creación de orden para cliente {CustomerId}", request.CustomerId);
 
             _extensions.ValidateOrderRequest(request);
-
             _extensions.ValidateEmptyProducts(request);
 
+            // Obtiene y valida los productos del pedido
             var productsList = await _extensions.ValidateProductsInList(request);
-
             var products = productsList.ToDictionary(p => p.Id);
 
+            // Crea los ítems de la orden
             var orderItems = request.OrderItems.Select(i =>
             {
                 var product = products[i.ProductId];
                 return new OrderItem(product, product.Id, i.Quantity, product.CurrentPrice);
             }).ToList();
 
+            // Actualiza el stock de cada producto
             foreach (var item in orderItems)
             {
                 var product = products[item.ProductId];
@@ -56,17 +59,17 @@ namespace Dsw2025Tpi.Application.Services
                 await _repository.Update(product);
             }
 
+            // Asigna fecha local argentina y crea la orden
             var fecLocArg = _extensions.GetDateArgentinean();
-
             var order = new Order(request.CustomerId, request.ShippingAddress, request.BillingAddress, orderItems)
             {
                 Date = fecLocArg
             };
 
             await _repository.Add(order);
-
             _logger.LogInformation("Orden creada exitosamente con ID: {OrderId}", order.Id);
 
+            // Mapea la entidad a la respuesta DTO
             var response = new OrderModel.Response(
                 Id: order.Id,
                 CustomerId: order.CustomerId ?? Guid.Empty,
@@ -92,11 +95,13 @@ namespace Dsw2025Tpi.Application.Services
             return response;
         }
 
+        // Devuelve una lista paginada de órdenes filtradas por estado y cliente
         public async Task<List<OrderModel.Response>> GetOrders(OrderStatus? status, Guid? customerId, int pageNumber, int pageSize)
         {
             _logger.LogInformation("Obteniendo órdenes. Filtros - Estado: {Status}, Cliente: {CustomerId}, Página: {Page}, Tamaño: {Size}",
                 status?.ToString() ?? "Todos", customerId?.ToString() ?? "Todos", pageNumber, pageSize);
 
+            // Filtro dinámico según parámetros opcionales
             Expression<Func<Order, bool>> filter = o =>
                 (!status.HasValue || o.Status == status.Value) &&
                 (!customerId.HasValue || o.CustomerId == customerId.Value);
@@ -109,6 +114,7 @@ namespace Dsw2025Tpi.Application.Services
                 return new List<OrderModel.Response>();
             }
 
+            // Paginado manual
             var pagedOrders = allOrders
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
@@ -116,6 +122,7 @@ namespace Dsw2025Tpi.Application.Services
 
             _logger.LogInformation("Se encontraron {Count} órdenes en la página {Page}", pagedOrders.Count, pageNumber);
 
+            // Obtiene los productos relacionados a los ítems
             var productIds = pagedOrders
                 .SelectMany(o => o.Items)
                 .Select(i => i.ProductId)
@@ -125,6 +132,7 @@ namespace Dsw2025Tpi.Application.Services
             var productsList = await _repository.GetFiltered<Product>(p => productIds.Contains(p.Id));
             var products = productsList.ToDictionary(p => p.Id);
 
+            // Mapea cada orden a su modelo de respuesta
             var responseList = pagedOrders.Select(order => new OrderModel.Response(
                 Id: order.Id,
                 CustomerId: order.CustomerId ?? Guid.Empty,
@@ -150,6 +158,7 @@ namespace Dsw2025Tpi.Application.Services
             return responseList;
         }
 
+        // Devuelve una orden específica por su ID, incluyendo ítems y productos
         public async Task<Order?> GetOrderById(Guid Id)
         {
             _logger.LogInformation("Buscando orden por ID: {Id}", Id);
@@ -165,6 +174,7 @@ namespace Dsw2025Tpi.Application.Services
             return order;
         }
 
+        // Actualiza el estado de una orden si es válido y diferente del actual
         public async Task<OrderModel.Response?> UpdateOrderStatus(Guid id, string newStatusText)
         {
             _logger.LogInformation("Actualizando estado de la orden {Id} a '{NewStatus}'", id, newStatusText);
@@ -177,12 +187,14 @@ namespace Dsw2025Tpi.Application.Services
                 throw new NotFoundException("La orden solicitada no existe");
             }
 
+            // Validación: el estado no debe ser numérico
             if (int.TryParse(newStatusTextUpper, out _))
             {
                 _logger.LogWarning("Estado inválido (numérico) para la orden: '{NewStatus}'", newStatusTextUpper);
                 throw new BadRequestException("No se permite ingresar un número como estado. Usá uno de los siguientes: PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELED.");
             }
 
+            // Validación contra el enum OrderStatus
             if (!Enum.TryParse<OrderStatus>(newStatusTextUpper, true, out var newStatus) ||
                 !Enum.GetNames(typeof(OrderStatus)).Contains(newStatus.ToString()))
             {
@@ -190,6 +202,7 @@ namespace Dsw2025Tpi.Application.Services
                 throw new BadRequestException("Estado de orden inválido. Usá uno de los siguientes: PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELED.");
             }
 
+            // Aplica el cambio de estado si corresponde
             if (order.Status != newStatus)
             {
                 order.Status = newStatus;
@@ -201,6 +214,7 @@ namespace Dsw2025Tpi.Application.Services
                 _logger.LogInformation("El estado de la orden ya es: {NewStatus}, no se realizaron cambios.", newStatus);
             }
 
+            // Carga productos para completar los datos de los ítems en la respuesta
             var productIds = order.Items.Select(i => i.ProductId).Distinct().ToList();
             var productsList = await _repository.GetFiltered<Product>(p => productIds.Contains(p.Id));
             var products = productsList.ToDictionary(p => p.Id);
@@ -229,4 +243,5 @@ namespace Dsw2025Tpi.Application.Services
         }
     }
 }
+
 

@@ -51,11 +51,11 @@ public class Dsw2025TpiContext : DbContext
             oi.HasKey(oi => oi.Id); // Llave primaria
             oi.HasOne(oi => oi.Order) // Relación con Order
                 .WithMany(o => o.Items) // Un pedido tiene muchos items
-                .HasForeignKey(o => o.OrderId)
+                .HasForeignKey(o => o.OrderId) // FK en OrderItem
                 .OnDelete(DeleteBehavior.Cascade); // Al borrar pedido, borrar items
             oi.HasOne(oi => oi.Product) // Relación con Product
                 .WithMany(p => p.OrderItems) // Un producto puede estar en muchos items
-                .HasForeignKey(oi => oi.ProductId)
+                .HasForeignKey(oi => oi.ProductId) // FK en OrderItem
                 .OnDelete(DeleteBehavior.Restrict); // No permite borrar producto si hay items asociados
             oi.Property(oi => oi.Quantity).IsRequired(); // Cantidad obligatoria
             oi.Property(oi => oi.UnitPrice).IsRequired().HasPrecision(15, 2); // Precio unitario con precisión decimal

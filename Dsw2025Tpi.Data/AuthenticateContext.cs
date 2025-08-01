@@ -19,7 +19,7 @@ namespace Dsw2025Tpi.Data
         {
             base.OnModelCreating(builder);
 
-            // Cambiar los nombres de las tablas predeterminadas de Identity a nombres personalizados en español
+            // Cambiar los nombres de las tablas predeterminadas de Identity a nombres personalizados
             builder.Entity<IdentityUser>(b => { b.ToTable("Usuarios"); });               // Tabla de usuarios
             builder.Entity<IdentityRole>(b => { b.ToTable("Roles"); });                   // Tabla de roles
             builder.Entity<IdentityUserRole<string>>(b => { b.ToTable("UsuariosRoles"); });       // Tabla de relación usuario-rol

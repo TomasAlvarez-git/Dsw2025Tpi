@@ -53,19 +53,11 @@ namespace Dsw2025Tpi.Domain.Entities
             InternalCode = internalCode;
             Name = name;
             Description = description;
-
             // La validación debe estar aquí para que se ejecute al actualizar
-            if (currentPrice <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(currentPrice), "El precio no debe ser menor o igual a 0");
-            }
-            CurrentPrice = currentPrice;
-
-            if (stockQuantity <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(stockQuantity), "El stock no debe ser menor o igual a 0");
-            }
-            StockQuantity = stockQuantity;
+            CurrentPrice = currentPrice <= 0 ?
+                throw new ArgumentOutOfRangeException(nameof(currentPrice), "El precio no debe ser menor o igual a 0") : currentPrice;
+            StockQuantity = stockQuantity <= 0 ?
+                throw new ArgumentOutOfRangeException(nameof(stockQuantity), "El stock no debe ser menor o igual a 0") : stockQuantity;
         }
 
         public bool StockControl (int quantity)

@@ -10,6 +10,7 @@ namespace Dsw2025Tpi.Application.Dtos
     public record RegisterModel(
         string Username, // Nombre de usuario que se registrará
         string Password, // Contraseña del usuario
-        string Email     // Correo electrónico del usuario
+        string Email,     // Correo electrónico del usuario
+        string PhoneNumber // Número de teléfono del usuario
     );
 }

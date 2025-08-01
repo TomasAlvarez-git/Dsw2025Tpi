@@ -1,6 +1,8 @@
 ﻿using Dsw2025Tpi.Application.Dtos;
 using Dsw2025Tpi.Application.Exceptions;
 using Dsw2025Tpi.Application.Services;
+using Dsw2025Tpi.Data;
+using Dsw2025Tpi.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,17 +17,20 @@ namespace Dsw2025Tpi.Api.Controllers
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly JwtTokenService _jwtTokenService;
+        private readonly Dsw2025TpiContext _context;
 
         // Constructor con inyección de dependencias
         public AuthenticateController(UserManager<IdentityUser> userManager,
                                       SignInManager<IdentityUser> signInManager,
                                       JwtTokenService jwtTokenService,
-                                      RoleManager<IdentityRole> roleManager)
+                                      RoleManager<IdentityRole> roleManager,
+                                      Dsw2025TpiContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _jwtTokenService = jwtTokenService;
             _roleManager = roleManager;
+            _context = context;
         }
 
         // Endpoint para login de usuario (POST /api/auth/login)

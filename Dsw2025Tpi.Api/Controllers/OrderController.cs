@@ -19,10 +19,10 @@ namespace Dsw2025Tpi.Api.Controllers
     public class OrderController : ControllerBase
     {
         // Servicio que contiene la lógica de negocio para la gestión de órdenes
-        private readonly OrdersManagementService _service;
+        private readonly IOrdersManagementService _service;
 
         // Constructor con inyección del servicio de órdenes
-        public OrderController(OrdersManagementService service)
+        public OrderController(IOrdersManagementService service)
         {
             _service = service;
         }

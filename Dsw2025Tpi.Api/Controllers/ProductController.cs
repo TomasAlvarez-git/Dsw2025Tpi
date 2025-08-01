@@ -18,10 +18,10 @@ namespace Dsw2025Tpi.Api.Controllers
     public class ProductsController : ControllerBase
     {
         // Servicio de lógica de productos
-        private readonly ProductsManagementService _service;
+        private readonly IProductsManagementService _service;
 
         // Constructor con inyección de dependencia del servicio
-        public ProductsController(ProductsManagementService service)
+        public ProductsController(IProductsManagementService service)
         {
             _service = service;
         }
@@ -30,7 +30,6 @@ namespace Dsw2025Tpi.Api.Controllers
         // Agrega un nuevo producto (solo rol Admin)
         [HttpPost()]
         [Authorize(Roles = "Admin")]
-        
         public async Task<IActionResult> AddProduct([FromBody] ProductModel.Request request)
         {
             // Agrega el producto usando el servicio

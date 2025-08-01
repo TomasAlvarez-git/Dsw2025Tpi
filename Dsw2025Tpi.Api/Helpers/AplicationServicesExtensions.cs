@@ -9,10 +9,12 @@ namespace Dsw2025Tpi.Api.Helpers
     {
         public static IServiceCollection AddAplicationServices(this IServiceCollection services)
         {
+            // Servicio que genera los tokens JWT
+            services.AddSingleton<JwtTokenService>();
             services.AddScoped<IRepository, EfRepository>(); // Patrón repositorio
-            services.AddTransient<ProductsManagementService>();
+            services.AddTransient<IProductsManagementService, ProductsManagementService>();
             services.AddTransient<ProductsManagmentServiceExtensions>();
-            services.AddTransient<OrdersManagementService>();
+            services.AddTransient<IOrdersManagementService, OrdersManagementService>();
             services.AddTransient<OrdersManagementServiceExtensions>();
             return services;
         }

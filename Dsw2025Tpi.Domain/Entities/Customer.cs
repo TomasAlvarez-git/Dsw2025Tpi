@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Dsw2025Tpi.Domain.Entities
 {
-    // Clase que representa un Cliente, hereda de EntityBase para incluir propiedades comunes como Id
+    // Clase que representa un Cliente, hereda de EntityBase para incluir la propiedad Id
     public class Customer : EntityBase
     {
         // Email del cliente, puede ser null

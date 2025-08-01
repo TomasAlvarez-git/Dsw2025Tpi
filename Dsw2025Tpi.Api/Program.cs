@@ -40,9 +40,6 @@ public class Program
         // Configura la autenticación y autorización con JWT
         builder.Services.AddAuthenticationAndAuthorization(builder.Configuration);
 
-        // Servicio que genera los tokens JWT
-        builder.Services.AddSingleton<JwtTokenService>();
-
         // Configuración de la base de datos y el contexto
         builder.Services.AddDbContexts(builder.Configuration);
 

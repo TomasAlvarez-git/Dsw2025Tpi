@@ -38,9 +38,6 @@ namespace Dsw2025Tpi.Domain.Entities
             if (productId == Guid.Empty)
                 throw new ArgumentNullException(nameof(productId), "El Id del producto no puede estar vacío.");
 
-            if (productId == Guid.Empty) 
-                throw new ArgumentNullException(nameof(productId), "El Id del producto no puede estar vacio");
-
             if (quantity <= 0)
                 throw new ArgumentOutOfRangeException(nameof(quantity), "La cantidad debe ser mayor a 0");
 
