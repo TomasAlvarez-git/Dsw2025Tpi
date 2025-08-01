@@ -42,6 +42,7 @@ namespace Dsw2025Tpi.Api.Controllers
         // Endpoint para obtener una lista paginada de órdenes (admin y cliente)
         [HttpGet]
         [Authorize(Roles = "Admin, Customer")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetOrders(
            [FromQuery] OrderStatus? status,         // Filtrar por estado opcional
            [FromQuery] Guid? customerId,            // Filtrar por cliente opcional
@@ -89,8 +90,7 @@ namespace Dsw2025Tpi.Api.Controllers
         // Endpoint para actualizar el estado de una orden (solo admin)
         [HttpPut("{id}/status")]
         [Authorize(Roles = "Admin")]
-        
-        
+        [AllowAnonymous]
         public async Task<IActionResult> UpdateOrderStatus(Guid id, [FromBody] UpdateOrderStatusRequest request)
         {
             // Cambia el estado de la orden utilizando el servicio

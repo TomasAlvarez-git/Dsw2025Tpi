@@ -62,7 +62,7 @@ public class Program
         }
 
         // Middlewares
-        app.UseDeveloperExceptionPage();
+        app.UseCustomMiddlewares();
 
         // Mapeo de los controladores a rutas HTTP
         app.MapControllers();

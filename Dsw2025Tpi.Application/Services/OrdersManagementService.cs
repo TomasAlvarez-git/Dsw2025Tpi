@@ -166,6 +166,7 @@ namespace Dsw2025Tpi.Application.Services
         public async Task<OrderModel.Response?> UpdateOrderStatus(Guid id, string newStatusText)
         {
             _logger.LogInformation("Actualizando estado de la orden {Id} a '{NewStatus}'", id, newStatusText);
+            var newStatusTextUpper = newStatusText.ToUpper();
 
             var order = await _repository.GetById<Order>(id, "Items");
             if (order == null)
@@ -174,17 +175,17 @@ namespace Dsw2025Tpi.Application.Services
                 throw new NotFoundException("La orden solicitada no existe");
             }
 
-            if (int.TryParse(newStatusText, out _))
+            if (int.TryParse(newStatusTextUpper, out _))
             {
-                _logger.LogWarning("Estado inválido (numérico) para la orden: '{NewStatus}'", newStatusText);
-                throw new BadRequestException("No se permite ingresar un número como estado. Usá uno válido.");
+                _logger.LogWarning("Estado inválido (numérico) para la orden: '{NewStatus}'", newStatusTextUpper);
+                throw new BadRequestException("No se permite ingresar un número como estado. Usá uno de los siguientes: PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELED.");
             }
 
-            if (!Enum.TryParse<OrderStatus>(newStatusText, true, out var newStatus) ||
+            if (!Enum.TryParse<OrderStatus>(newStatusTextUpper, true, out var newStatus) ||
                 !Enum.GetNames(typeof(OrderStatus)).Contains(newStatus.ToString()))
             {
-                _logger.LogWarning("Estado inválido: '{NewStatus}' no es parte del enum OrderStatus", newStatusText);
-                throw new BadRequestException("Estado de orden inválido. Debe ser uno válido.");
+                _logger.LogWarning("Estado inválido: '{NewStatus}' no es parte del enum OrderStatus", newStatusTextUpper);
+                throw new BadRequestException("Estado de orden inválido. Usá uno de los siguientes: PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELED.");
             }
 
             if (order.Status != newStatus)

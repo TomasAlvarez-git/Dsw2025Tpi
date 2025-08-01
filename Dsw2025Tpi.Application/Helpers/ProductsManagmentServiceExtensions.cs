@@ -26,8 +26,7 @@ namespace Dsw2025Tpi.Application.Helpers
         public void ValidateProductRequest(ProductModel.Request request)
         {
             if (string.IsNullOrWhiteSpace(request.Sku) ||
-                string.IsNullOrWhiteSpace(request.Name) ||
-                request.CurrentPrice < 0 || request.StockQuantity < 0)
+                string.IsNullOrWhiteSpace(request.Name))
             {
                 _logger.LogWarning("Datos inválidos del producto: {@Request}", request);
                 throw new BadRequestException("Los datos del producto no son válidos.");

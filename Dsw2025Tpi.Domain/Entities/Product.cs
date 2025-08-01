@@ -43,7 +43,7 @@ namespace Dsw2025Tpi.Domain.Entities
             CurrentPrice = currentPrice <= 0 ?
                 throw new ArgumentOutOfRangeException(nameof(currentPrice), "El precio no debe ser menor o igual a 0") : currentPrice;
             StockQuantity = stockQuantity <= 0 ?
-                throw new ArgumentOutOfRangeException(nameof(stockQuantity), "El precio no debe ser menor o igual a 0") : stockQuantity;
+                throw new ArgumentOutOfRangeException(nameof(stockQuantity), "El stock no debe ser menor o igual a 0") : stockQuantity;
             IsActive = true; // Por defecto el producto está activo
         }
 
