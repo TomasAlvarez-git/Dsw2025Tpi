@@ -968,3 +968,23 @@ Dsw2025Tpi.Application.Exceptions.BadRequestException: Ya existe un usuario regi
 [01-08-2025]-[18:20:01.115] [INF] Microsoft.Hosting.Lifetime Content root path: C:\Users\tomas\OneDrive\Escritorio\UTN\3ER AÑO\Desarrollo de software\1er Cuat (BackEnd)\Unidad 2\TPI\Dsw2025Tpi\Dsw2025Tpi.Api
 [01-08-2025]-[18:20:26.591] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Obteniendo lista de todos los productos
 [01-08-2025]-[18:20:29.981] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Se encontraron 5 productos
+[01-08-2025]-[18:29:55.094] [INF] Microsoft.Hosting.Lifetime Now listening on: https://localhost:7138
+[01-08-2025]-[18:29:55.099] [INF] Microsoft.Hosting.Lifetime Now listening on: http://localhost:5142
+[01-08-2025]-[18:29:55.394] [INF] Microsoft.Hosting.Lifetime Application started. Press Ctrl+C to shut down.
+[01-08-2025]-[18:29:55.395] [INF] Microsoft.Hosting.Lifetime Hosting environment: Development
+[01-08-2025]-[18:29:55.396] [INF] Microsoft.Hosting.Lifetime Content root path: C:\Users\tomas\OneDrive\Escritorio\UTN\3ER AÑO\Desarrollo de software\1er Cuat (BackEnd)\Unidad 2\TPI\Dsw2025Tpi\Dsw2025Tpi.Api
+[01-08-2025]-[18:29:58.997] [INF] Microsoft.Hosting.Lifetime Application is shutting down...
+[01-08-2025]-[18:36:05.983] [INF] Microsoft.Hosting.Lifetime Now listening on: https://localhost:7138
+[01-08-2025]-[18:36:05.985] [INF] Microsoft.Hosting.Lifetime Now listening on: http://localhost:5142
+[01-08-2025]-[18:36:06.093] [INF] Microsoft.Hosting.Lifetime Application started. Press Ctrl+C to shut down.
+[01-08-2025]-[18:36:06.094] [INF] Microsoft.Hosting.Lifetime Hosting environment: Development
+[01-08-2025]-[18:36:06.094] [INF] Microsoft.Hosting.Lifetime Content root path: C:\Users\tomas\OneDrive\Escritorio\UTN\3ER AÑO\Desarrollo de software\1er Cuat (BackEnd)\Unidad 2\TPI\Dsw2025Tpi\Dsw2025Tpi.Api
+[01-08-2025]-[18:37:38.840] [INF] Microsoft.Hosting.Lifetime Now listening on: https://localhost:7138
+[01-08-2025]-[18:37:38.844] [INF] Microsoft.Hosting.Lifetime Now listening on: http://localhost:5142
+[01-08-2025]-[18:37:39.039] [INF] Microsoft.Hosting.Lifetime Application started. Press Ctrl+C to shut down.
+[01-08-2025]-[18:37:39.041] [INF] Microsoft.Hosting.Lifetime Hosting environment: Development
+[01-08-2025]-[18:37:39.041] [INF] Microsoft.Hosting.Lifetime Content root path: C:\Users\tomas\OneDrive\Escritorio\UTN\3ER AÑO\Desarrollo de software\1er Cuat (BackEnd)\Unidad 2\TPI\Dsw2025Tpi\Dsw2025Tpi.Api
+[01-08-2025]-[18:37:47.326] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Obteniendo lista de todos los productos
+[01-08-2025]-[18:37:49.443] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Se encontraron 5 productos
+[01-08-2025]-[18:37:58.136] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Buscando producto por ID: "554569ea-2da9-4859-a20f-0674e3096839"
+[01-08-2025]-[18:37:58.406] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Producto encontrado: SKU-1001

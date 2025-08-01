@@ -9,6 +9,7 @@ using Dsw2025Tpi.Domain.Entities;
 using Dsw2025Tpi.Domain.Interfaces;
 using Microsoft.Extensions.Logging;
 using Dsw2025Tpi.Application.Helpers;
+using Dsw2025Tpi.Application.Interfaces;
 
 namespace Dsw2025Tpi.Application.Services
 {
