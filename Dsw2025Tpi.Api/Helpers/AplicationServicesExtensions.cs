@@ -14,6 +14,7 @@ namespace Dsw2025Tpi.Api.Helpers
             services.AddTransient<ProductsManagmentServiceExtensions>();
             services.AddTransient<OrdersManagementService>();
             services.AddTransient<OrdersManagementServiceExtensions>();
+            return services;
         }
     }
 }

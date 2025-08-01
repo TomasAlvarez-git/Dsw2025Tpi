@@ -63,3 +63,11 @@
 [31-07-2025]-[17:07:03.248] [INF] Microsoft.Hosting.Lifetime Application started. Press Ctrl+C to shut down.
 [31-07-2025]-[17:07:03.249] [INF] Microsoft.Hosting.Lifetime Hosting environment: Development
 [31-07-2025]-[17:07:03.249] [INF] Microsoft.Hosting.Lifetime Content root path: C:\Users\tomas\OneDrive\Escritorio\UTN\3ER AÑO\Desarrollo de software\1er Cuat (BackEnd)\Unidad 2\TPI\Dsw2025Tpi\Dsw2025Tpi.Api
+[31-07-2025]-[19:17:12.446] [INF] Microsoft.Hosting.Lifetime Now listening on: https://localhost:7138
+[31-07-2025]-[19:17:12.448] [INF] Microsoft.Hosting.Lifetime Now listening on: http://localhost:5142
+[31-07-2025]-[19:17:12.565] [INF] Microsoft.Hosting.Lifetime Application started. Press Ctrl+C to shut down.
+[31-07-2025]-[19:17:12.566] [INF] Microsoft.Hosting.Lifetime Hosting environment: Development
+[31-07-2025]-[19:17:12.566] [INF] Microsoft.Hosting.Lifetime Content root path: C:\Users\tomas\OneDrive\Escritorio\UTN\3ER AÑO\Desarrollo de software\1er Cuat (BackEnd)\Unidad 2\TPI\Dsw2025Tpi\Dsw2025Tpi.Api
+[31-07-2025]-[19:18:11.120] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Obteniendo lista de todos los productos
+[31-07-2025]-[19:18:13.693] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Se encontraron 3 productos
+[31-07-2025]-[19:18:30.409] [INF] Microsoft.Hosting.Lifetime Application is shutting down...
