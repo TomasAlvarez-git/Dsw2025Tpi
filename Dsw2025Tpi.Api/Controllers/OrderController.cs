@@ -30,7 +30,7 @@ namespace Dsw2025Tpi.Api.Controllers
         // Endpoint para que un cliente cree una nueva orden
         [HttpPost()]
         [Authorize(Roles = "Customer")]
-        [AllowAnonymous]
+        
         public async Task<IActionResult> AddOrder([FromBody] OrderModel.Request request)
         {
             // Crea una orden y la guarda en base de datos
@@ -42,7 +42,7 @@ namespace Dsw2025Tpi.Api.Controllers
         // Endpoint para obtener una lista paginada de órdenes (admin y cliente)
         [HttpGet]
         [Authorize(Roles = "Admin, Customer")]
-        [AllowAnonymous]
+        
         public async Task<IActionResult> GetOrders(
            [FromQuery] OrderStatus? status,         // Filtrar por estado opcional
            [FromQuery] Guid? customerId,            // Filtrar por cliente opcional
@@ -59,7 +59,7 @@ namespace Dsw2025Tpi.Api.Controllers
         // Endpoint para obtener los detalles de una orden por ID
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin, Customer")]
-        [AllowAnonymous]
+        
         public async Task<IActionResult> GetOrderById(Guid id)
         {
             // Busca la orden por su identificador
@@ -90,7 +90,7 @@ namespace Dsw2025Tpi.Api.Controllers
         // Endpoint para actualizar el estado de una orden (solo admin)
         [HttpPut("{id}/status")]
         [Authorize(Roles = "Admin")]
-        [AllowAnonymous]
+        
         public async Task<IActionResult> UpdateOrderStatus(Guid id, [FromBody] UpdateOrderStatusRequest request)
         {
             // Cambia el estado de la orden utilizando el servicio

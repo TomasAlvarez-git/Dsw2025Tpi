@@ -31,7 +31,7 @@ namespace Dsw2025Tpi.Domain.Entities
         public ICollection<OrderItem> OrderItems { get; } = new HashSet<OrderItem>();
 
         // Constructor por defecto
-        public Product() { }
+        protected Product() { }
 
         // Constructor que inicializa las propiedades clave del producto
         public Product(string sku, string internalCode, string name, string description, decimal currentPrice, int stockQuantity)
@@ -45,6 +45,27 @@ namespace Dsw2025Tpi.Domain.Entities
             StockQuantity = stockQuantity <= 0 ?
                 throw new ArgumentOutOfRangeException(nameof(stockQuantity), "El stock no debe ser menor o igual a 0") : stockQuantity;
             IsActive = true; // Por defecto el producto está activo
+        }
+
+        public void Update(string sku, string internalCode, string name, string description, decimal currentPrice, int? stockQuantity)
+        {
+            Sku = sku;
+            InternalCode = internalCode;
+            Name = name;
+            Description = description;
+
+            // La validación debe estar aquí para que se ejecute al actualizar
+            if (currentPrice <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(currentPrice), "El precio no debe ser menor o igual a 0");
+            }
+            CurrentPrice = currentPrice;
+
+            if (stockQuantity <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(stockQuantity), "El stock no debe ser menor o igual a 0");
+            }
+            StockQuantity = stockQuantity;
         }
 
         public bool StockControl (int quantity)

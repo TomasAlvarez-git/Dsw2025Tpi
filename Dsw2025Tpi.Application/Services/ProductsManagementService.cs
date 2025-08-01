@@ -63,6 +63,7 @@ namespace Dsw2025Tpi.Application.Services
             return product;
         }
 
+        // Tu servicio de actualización
         public async Task<ProductModel.Response> Update(Guid Id, ProductModel.Request request)
         {
             _logger.LogInformation("Actualizando producto con ID: {Id}", Id);
@@ -70,15 +71,11 @@ namespace Dsw2025Tpi.Application.Services
             _extensions.ValidateProductRequest(request);
 
             var product = await _repository.GetById<Product>(Id);
-            
+
             _extensions.ValidateProductNull(product);
 
-            product.Sku = request.Sku;
-            product.Name = request.Name;
-            product.InternalCode = request.InternalCode;
-            product.Description = request.Description;
-            product.CurrentPrice = request.CurrentPrice;
-            product.StockQuantity = request.StockQuantity;
+            // Llama al método de actualización de la entidad, delegando la validación
+            product.Update(request.Sku, request.InternalCode, request.Name, request.Description, request.CurrentPrice, request.StockQuantity);
 
             await _repository.Update(product);
 

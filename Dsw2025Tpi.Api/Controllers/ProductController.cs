@@ -30,7 +30,7 @@ namespace Dsw2025Tpi.Api.Controllers
         // Agrega un nuevo producto (solo rol Admin)
         [HttpPost()]
         [Authorize(Roles = "Admin")]
-        [AllowAnonymous]
+        
         public async Task<IActionResult> AddProduct([FromBody] ProductModel.Request request)
         {
             // Agrega el producto usando el servicio
@@ -95,7 +95,7 @@ namespace Dsw2025Tpi.Api.Controllers
         // Actualiza todos los campos del producto (solo Admin)
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
-        [AllowAnonymous]
+        
         public async Task<IActionResult> UpdateProduct(Guid id, [FromBody] ProductModel.Request request)
         {
             // Llama al servicio para actualizar el producto
@@ -109,7 +109,7 @@ namespace Dsw2025Tpi.Api.Controllers
         // Deshabilita (soft delete) un producto (solo Admin)
         [HttpPatch("{id}")]
         [Authorize(Roles = "Admin")]
-        [AllowAnonymous]
+        
         public async Task<IActionResult> DisableProduct(Guid id)
         {
             // Llama al servicio para deshabilitar el producto
