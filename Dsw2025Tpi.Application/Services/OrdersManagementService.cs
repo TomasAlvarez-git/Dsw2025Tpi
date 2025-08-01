@@ -31,6 +31,8 @@ namespace Dsw2025Tpi.Application.Services
 
         public async Task<OrderModel.Response> AddOrder(OrderModel.Request request)
         {
+            _extensions.ValidateIdCustomer(request);
+
             _logger.LogInformation("Iniciando creación de orden para cliente {CustomerId}", request.CustomerId);
 
             _extensions.ValidateOrderRequest(request);

@@ -45,6 +45,17 @@ namespace Dsw2025Tpi.Application.Helpers
             }
         }
 
+        public void ValidateIdCustomer(OrderModel.Request request)
+        {
+            var existingCustomer = _repository.GetById<Customer>(request.CustomerId);
+
+            if (existingCustomer == null)
+            {
+                _logger.LogWarning("Cliente no encontrado con ID: {CustomerId}", request.CustomerId);
+                throw new NotFoundException($"No se encontró un cliente con el ID: {request.CustomerId}.");
+            }
+        }
+
         public async Task<IEnumerable<Product>> ValidateProductsInList(OrderModel.Request request)
         {
             var productIds = request.OrderItems.Select(i => i.ProductId).Distinct().ToList();
@@ -79,5 +90,7 @@ namespace Dsw2025Tpi.Application.Helpers
                 return order;
             }
         }
+
+        
     }
 }

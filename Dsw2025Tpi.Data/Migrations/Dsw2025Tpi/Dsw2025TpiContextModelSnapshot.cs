@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Dsw2025Tpi.Data.Migrations
+namespace Dsw2025Tpi.Data.Migrations.Dsw2025Tpi
 {
     [DbContext(typeof(Dsw2025TpiContext))]
     partial class Dsw2025TpiContextModelSnapshot : ModelSnapshot

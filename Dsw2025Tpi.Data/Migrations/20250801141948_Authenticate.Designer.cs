@@ -9,10 +9,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Dsw2025Tpi.Data.Migrations.Authenticate
+namespace Dsw2025Tpi.Data.Migrations
 {
     [DbContext(typeof(AuthenticateContext))]
-    [Migration("20250722174413_Authenticate")]
+    [Migration("20250801141948_Authenticate")]
     partial class Authenticate
     {
         /// <inheritdoc />

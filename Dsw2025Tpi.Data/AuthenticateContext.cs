@@ -28,8 +28,9 @@ namespace Dsw2025Tpi.Data
             builder.Entity<IdentityRoleClaim<string>>(b => { b.ToTable("RolesClaims"); });         // Tabla de claims de roles
             builder.Entity<IdentityUserToken<string>>(b => { b.ToTable("UsuariosTokens"); });     // Tabla de tokens de usuario
 
-            // Seed inicial para roles predefinidos (Admin y Customer) con IDs fijos para referencia
-            builder.Entity<IdentityRole>().HasData(
+
+        // Seed inicial para roles predefinidos (Admin y Customer) con IDs fijos para referencia
+        builder.Entity<IdentityRole>().HasData(
                 new IdentityRole
                 {
                     Id = "f936a0de-4c11-4c82-b2f9-38cd193514ed",

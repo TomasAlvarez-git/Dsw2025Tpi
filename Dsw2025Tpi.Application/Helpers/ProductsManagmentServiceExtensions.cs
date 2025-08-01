@@ -75,7 +75,7 @@ namespace Dsw2025Tpi.Application.Helpers
             }
         }
 
-        public async void ValidateDuplicatedProduct(ProductModel.Request request)
+        public async Task ValidateDuplicatedProduct(ProductModel.Request request)
         {
             var exist = await _repository.First<Product>(p => p.Sku == request.Sku);
             if (exist != null)

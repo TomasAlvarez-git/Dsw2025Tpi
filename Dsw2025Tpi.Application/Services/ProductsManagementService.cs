@@ -31,7 +31,7 @@ namespace Dsw2025Tpi.Application.Services
 
             _extensions.ValidateProductRequest(request);
 
-            _extensions.ValidateDuplicatedProduct(request);
+            await _extensions.ValidateDuplicatedProduct(request);
 
             var product = new Product(request.Sku, request.InternalCode, request.Name, request.Description, request.CurrentPrice, request.StockQuantity);
             await _repository.Add(product);
@@ -73,6 +73,8 @@ namespace Dsw2025Tpi.Application.Services
             var product = await _repository.GetById<Product>(Id);
 
             _extensions.ValidateProductNull(product);
+
+            await _extensions.ValidateDuplicatedProduct(request);
 
             // Llama al método de actualización de la entidad, delegando la validación
             product.Update(request.Sku, request.InternalCode, request.Name, request.Description, request.CurrentPrice, request.StockQuantity);

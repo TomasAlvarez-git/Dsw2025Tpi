@@ -31,7 +31,7 @@ namespace Dsw2025Tpi.Domain.Entities
         public ICollection<OrderItem> OrderItems { get; } = new HashSet<OrderItem>();
 
         // Constructor por defecto
-        protected Product() { }
+        public Product() { }
 
         // Constructor que inicializa las propiedades clave del producto
         public Product(string sku, string internalCode, string name, string description, decimal currentPrice, int stockQuantity)
