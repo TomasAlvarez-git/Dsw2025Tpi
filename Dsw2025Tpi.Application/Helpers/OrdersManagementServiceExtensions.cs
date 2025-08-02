@@ -45,9 +45,15 @@ namespace Dsw2025Tpi.Application.Helpers
             }
         }
 
-        public void ValidateIdCustomer(OrderModel.Request request)
+        public async Task ValidateIdCustomer(OrderModel.Request request)
         {
-            var existingCustomer = _repository.GetById<Customer>(request.CustomerId);
+            if (request.CustomerId == Guid.Empty)
+            {
+                _logger.LogWarning("CustomerId vacío recibido en la solicitud.");
+                throw new BadRequestException("El ID del cliente no puede estar vacío.");
+            }
+
+            var existingCustomer = await _repository.GetById<Customer>(request.CustomerId);
 
             if (existingCustomer == null)
             {
@@ -77,7 +83,7 @@ namespace Dsw2025Tpi.Application.Helpers
             return fechaLocalArgentina;
         }
 
-        public async Task<Order> ValidateOrderNull(Guid Id, IEnumerable<Order>? orders)
+        public Order ValidateOrderNull(Guid Id, IEnumerable<Order>? orders)
         {
             var order = orders.FirstOrDefault();
             if (order == null)
@@ -91,6 +97,18 @@ namespace Dsw2025Tpi.Application.Helpers
             }
         }
 
-        
+        public async Task ValidateAddressesDoNotExistAsync(OrderModel.Request request)
+        {
+            var matchingOrders = await _repository.GetFiltered<Order>(o =>
+                o.ShippingAddress.ToLower().Trim() == request.ShippingAddress.ToLower().Trim() ||
+                o.BillingAddress.ToLower().Trim() == request.BillingAddress.ToLower().Trim());
+
+            if (matchingOrders?.Any() == true)
+            {
+                _logger.LogWarning("Ya existen órdenes con direcciones iguales.");
+                throw new BadRequestException("Las direcciones de envío o facturación ya existen en otras órdenes.");
+            }
+        }
+
     }
 }

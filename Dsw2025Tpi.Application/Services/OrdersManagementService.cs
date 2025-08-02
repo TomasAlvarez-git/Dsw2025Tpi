@@ -35,12 +35,15 @@ namespace Dsw2025Tpi.Application.Services
         // Crea una nueva orden con los productos y datos del cliente
         public async Task<OrderModel.Response> AddOrder(OrderModel.Request request)
         {
-            _extensions.ValidateIdCustomer(request);
+            await _extensions.ValidateIdCustomer(request);
 
             _logger.LogInformation("Iniciando creación de orden para cliente {CustomerId}", request.CustomerId);
 
-            _extensions.ValidateOrderRequest(request);
-            _extensions.ValidateEmptyProducts(request);
+             _extensions.ValidateOrderRequest(request);
+
+            //await _extensions.ValidateAddressesDoNotExistAsync(request);
+
+             _extensions.ValidateEmptyProducts(request);
 
             // Obtiene y valida los productos del pedido
             var productsList = await _extensions.ValidateProductsInList(request);
@@ -62,7 +65,7 @@ namespace Dsw2025Tpi.Application.Services
             }
 
             // Asigna fecha local argentina y crea la orden
-            var fecLocArg = _extensions.GetDateArgentinean();
+            var fecLocArg =  _extensions.GetDateArgentinean();
             var order = new Order(request.CustomerId, request.ShippingAddress, request.BillingAddress, orderItems)
             {
                 Date = fecLocArg
@@ -172,7 +175,7 @@ namespace Dsw2025Tpi.Application.Services
                 include: new[] { "Items", "Items.Product" }
             );
 
-            var order = await _extensions.ValidateOrderNull(Id, orders);
+            var order =  _extensions.ValidateOrderNull(Id, orders);
 
             _logger.LogInformation("Orden encontrada con ID: {Id}", Id);
             return order;

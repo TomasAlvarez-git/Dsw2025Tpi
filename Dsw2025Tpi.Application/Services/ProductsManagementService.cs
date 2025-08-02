@@ -33,7 +33,7 @@ namespace Dsw2025Tpi.Application.Services
             _logger.LogInformation("Iniciando creación de producto con SKU: {Sku}", request.Sku);
 
             // Validación del request
-            _extensions.ValidateProductRequest(request);
+            await _extensions.ValidateProductRequest(request);
 
             // Verifica duplicados
             await _extensions.ValidateDuplicatedProduct(request);
@@ -56,7 +56,7 @@ namespace Dsw2025Tpi.Application.Services
             var products = await _repository.GetAll<Product>();
 
             // Verifica si hay productos cargados
-            _extensions.ValidateProductsNull(products);
+            await _extensions.ValidateProductsNull(products);
 
             _logger.LogInformation("Se encontraron {Count} productos", products.Count());
 
@@ -81,12 +81,12 @@ namespace Dsw2025Tpi.Application.Services
         {
             _logger.LogInformation("Actualizando producto con ID: {Id}", Id);
 
-            _extensions.ValidateProductRequest(request);
+            await _extensions.ValidateProductRequest(request);
 
             var product = await _repository.GetById<Product>(Id);
-            _extensions.ValidateProductNull(product);
+            await _extensions.ValidateProductNull(product);
 
-            await _extensions.ValidateDuplicatedProduct(request);
+            await _extensions.ValidateDuplicatedProductUpdate(request, Id);
 
             // Aplica los cambios
             product.Update(request.Sku, request.InternalCode, request.Name, request.Description, request.CurrentPrice, request.StockQuantity);
@@ -103,7 +103,7 @@ namespace Dsw2025Tpi.Application.Services
             _logger.LogInformation("Desactivando producto con ID: {Id}", Id);
 
             var product = await _repository.GetById<Product>(Id);
-            _extensions.ValidateProductNull(product);
+            await _extensions.ValidateProductNull(product);
 
             // Cambia el estado a inactivo
             product.IsActive = false;
