@@ -1,0 +1,69 @@
+[02-08-2025]-[08:35:24.314] [INF] Microsoft.Hosting.Lifetime Now listening on: https://localhost:7138
+[02-08-2025]-[08:35:24.316] [INF] Microsoft.Hosting.Lifetime Now listening on: http://localhost:5142
+[02-08-2025]-[08:35:24.438] [INF] Microsoft.Hosting.Lifetime Application started. Press Ctrl+C to shut down.
+[02-08-2025]-[08:35:24.439] [INF] Microsoft.Hosting.Lifetime Hosting environment: Development
+[02-08-2025]-[08:35:24.439] [INF] Microsoft.Hosting.Lifetime Content root path: C:\Users\tomas\OneDrive\Escritorio\UTN\3ER AÑO\Desarrollo de software\1er Cuat (BackEnd)\Unidad 2\TPI\Dsw2025Tpi\Dsw2025Tpi.Api
+[02-08-2025]-[08:41:02.078] [ERR] Dsw2025Tpi.Api.Middleware.ExceptionMiddleware Passwords must have at least one non alphanumeric character.
+Dsw2025Tpi.Application.Exceptions.BadRequestException: Passwords must have at least one non alphanumeric character.
+   at Dsw2025Tpi.Api.Controllers.AuthenticateController.RegisterAdmin(RegisterModel model) in C:\Users\tomas\OneDrive\Escritorio\UTN\3ER AÑO\Desarrollo de software\1er Cuat (BackEnd)\Unidad 2\TPI\Dsw2025Tpi\Dsw2025Tpi.Api\Controllers\AuthenticateController.cs:line 84
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Dsw2025Tpi.Api.Middleware.ExceptionMiddleware.InvokeAsync(HttpContext context) in C:\Users\tomas\OneDrive\Escritorio\UTN\3ER AÑO\Desarrollo de software\1er Cuat (BackEnd)\Unidad 2\TPI\Dsw2025Tpi\Dsw2025Tpi.Api\Middleware\ExceptionMiddleware.cs:line 28
+[02-08-2025]-[08:43:27.122] [INF] Dsw2025Tpi.Application.Services.JwtTokenService Generando token JWT para el usuario: TomasAdmin con rol: Admin
+[02-08-2025]-[08:43:27.154] [INF] Dsw2025Tpi.Application.Services.JwtTokenService Token JWT generado exitosamente para el usuario: TomasAdmin
+[02-08-2025]-[08:44:38.535] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Iniciando creación de producto con SKU: SKU-1000
+[02-08-2025]-[08:44:38.770] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Producto creado correctamente: SKU-1000
+[02-08-2025]-[08:45:31.543] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Iniciando creación de producto con SKU: SKU-1001
+[02-08-2025]-[08:45:31.551] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Producto creado correctamente: SKU-1001
+[02-08-2025]-[08:46:27.211] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Iniciando creación de producto con SKU: SKU-1002
+[02-08-2025]-[08:46:27.226] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Producto creado correctamente: SKU-1002
+[02-08-2025]-[08:46:45.834] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Iniciando creación de producto con SKU: SKU-1003
+[02-08-2025]-[08:46:45.850] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Producto creado correctamente: SKU-1003
+[02-08-2025]-[08:47:09.433] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Iniciando creación de producto con SKU: SKU-1004
+[02-08-2025]-[08:47:09.440] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Producto creado correctamente: SKU-1004
+[02-08-2025]-[08:47:41.462] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Iniciando creación de producto con SKU: SKU-1005
+[02-08-2025]-[08:47:41.477] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Producto creado correctamente: SKU-1005
+[02-08-2025]-[08:47:53.387] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Iniciando creación de producto con SKU: SKU-1006
+[02-08-2025]-[08:47:53.392] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Producto creado correctamente: SKU-1006
+[02-08-2025]-[08:48:05.752] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Iniciando creación de producto con SKU: SKU-1007
+[02-08-2025]-[08:48:05.759] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Producto creado correctamente: SKU-1007
+[02-08-2025]-[08:48:13.586] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Iniciando creación de producto con SKU: SKU-1008
+[02-08-2025]-[08:48:13.592] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Producto creado correctamente: SKU-1008
+[02-08-2025]-[08:48:23.680] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Iniciando creación de producto con SKU: SKU-1009
+[02-08-2025]-[08:48:23.686] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Producto creado correctamente: SKU-1009
+[02-08-2025]-[08:49:55.444] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Iniciando creación de producto con SKU: SKU-1010
+[02-08-2025]-[08:49:55.453] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Producto creado correctamente: SKU-1010
+[02-08-2025]-[08:50:43.241] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Iniciando creación de producto con SKU: SKU-1011
+[02-08-2025]-[08:50:43.253] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Producto creado correctamente: SKU-1011
+[02-08-2025]-[08:50:59.271] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Iniciando creación de producto con SKU: SKU-1012
+[02-08-2025]-[08:50:59.277] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Producto creado correctamente: SKU-1012
+[02-08-2025]-[08:51:07.152] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Iniciando creación de producto con SKU: SKU-1013
+[02-08-2025]-[08:51:07.159] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Producto creado correctamente: SKU-1013
+[02-08-2025]-[08:51:12.771] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Iniciando creación de producto con SKU: SKU-1014
+[02-08-2025]-[08:51:12.778] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Producto creado correctamente: SKU-1014
+[02-08-2025]-[08:51:29.535] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Iniciando creación de producto con SKU: SKU-1015
+[02-08-2025]-[08:51:29.544] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Producto creado correctamente: SKU-1015
+[02-08-2025]-[08:51:35.714] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Iniciando creación de producto con SKU: SKU-1016
+[02-08-2025]-[08:51:35.721] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Producto creado correctamente: SKU-1016
+[02-08-2025]-[08:51:45.957] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Iniciando creación de producto con SKU: SKU-1017
+[02-08-2025]-[08:51:45.964] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Producto creado correctamente: SKU-1017
+[02-08-2025]-[08:51:52.458] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Iniciando creación de producto con SKU: SKU-1018
+[02-08-2025]-[08:51:52.466] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Producto creado correctamente: SKU-1018
+[02-08-2025]-[08:52:00.439] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Iniciando creación de producto con SKU: SKU-1019
+[02-08-2025]-[08:52:00.446] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Producto creado correctamente: SKU-1019
+[02-08-2025]-[08:52:47.416] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Obteniendo lista de todos los productos
+[02-08-2025]-[08:52:47.430] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Se encontraron 22 productos
+[02-08-2025]-[08:53:04.090] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Buscando producto por ID: "a4d50f8f-6f1f-4b71-a67d-17a9f0528f52"
+[02-08-2025]-[08:53:04.101] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Producto encontrado: SKU-1018
+[02-08-2025]-[08:59:18.660] [INF] Microsoft.Hosting.Lifetime Application is shutting down...
+[02-08-2025]-[09:12:19.665] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Obteniendo lista de todos los productos
+[02-08-2025]-[09:12:21.249] [INF] Dsw2025Tpi.Application.Services.ProductsManagementService Se encontraron 22 productos

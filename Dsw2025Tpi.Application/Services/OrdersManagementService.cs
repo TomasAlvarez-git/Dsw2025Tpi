@@ -1,18 +1,19 @@
 ﻿using Dsw2025Tpi.Application.Dtos;
 using Dsw2025Tpi.Application.Exceptions;
+using Dsw2025Tpi.Application.Helpers;
+using Dsw2025Tpi.Application.Interfaces;
 using Dsw2025Tpi.Domain.Entities;
 using Dsw2025Tpi.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-using Dsw2025Tpi.Application.Helpers;
 using static System.Runtime.InteropServices.JavaScript.JSType;
-using Dsw2025Tpi.Application.Interfaces;
 
 namespace Dsw2025Tpi.Application.Services
 {
@@ -102,7 +103,9 @@ namespace Dsw2025Tpi.Application.Services
             _logger.LogInformation("Obteniendo órdenes. Filtros - Estado: {Status}, Cliente: {CustomerId}, Página: {Page}, Tamaño: {Size}",
                 status?.ToString() ?? "Todos", customerId?.ToString() ?? "Todos", pageNumber, pageSize);
 
-            // Filtro dinámico según parámetros opcionales
+            // Filtro dinámico según parámetros opcionales. Se construye una expresión lambda que actúa como filtro:
+            //Si no se pasa status, no se filtra por estado.Si no se pasa customerId, no se filtra por cliente.
+            //Si se pasan, se filtra por el valor correspondiente.
             Expression<Func<Order, bool>> filter = o =>
                 (!status.HasValue || o.Status == status.Value) &&
                 (!customerId.HasValue || o.CustomerId == customerId.Value);
@@ -117,7 +120,7 @@ namespace Dsw2025Tpi.Application.Services
 
             // Paginado manual
             var pagedOrders = allOrders
-                .Skip((pageNumber - 1) * pageSize)
+                .Skip((pageNumber - 1) * pageSize) //Calcula cuántos elementos se deben saltar para llegar al comienzo de la página deseada.
                 .Take(pageSize)
                 .ToList();
 

@@ -9,10 +9,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Dsw2025Tpi.Data.Migrations.Dsw2025Tpi
+namespace Dsw2025Tpi.Data.Migrations
 {
     [DbContext(typeof(Dsw2025TpiContext))]
-    [Migration("20250801142135_Test")]
+    [Migration("20250802113405_Test")]
     partial class Test
     {
         /// <inheritdoc />

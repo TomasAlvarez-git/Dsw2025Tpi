@@ -10,13 +10,15 @@ namespace Dsw2025Tpi.Api.Helpers
             {
                 o.CustomSchemaIds(type => type.FullName.Replace("+", "."));
                 o.SwaggerDoc("v1", new OpenApiInfo { Title = "Dsw2025Tpi", Version = "v1" });
+                //Agrega soporte para seguridad utilizando el esquema JWT Bearer
                 o.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
                     Name = "Authorization",
                     Description = "Ingrese el token JWT",
-                    Type = SecuritySchemeType.ApiKey
+                    Type = SecuritySchemeType.ApiKey //El tipo es ApiKey (así es como Swagger representa el uso de headers con tokens).
                 });
+                //Esta parte enlaza la definición "Bearer" como requisito global de seguridad.
                 o.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 {

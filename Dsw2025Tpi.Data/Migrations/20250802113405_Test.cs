@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Dsw2025Tpi.Data.Migrations.Dsw2025Tpi
+namespace Dsw2025Tpi.Data.Migrations
 {
     /// <inheritdoc />
     public partial class Test : Migration
