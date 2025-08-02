@@ -58,7 +58,7 @@ namespace Dsw2025Tpi.Application.Helpers
             );
         }
 
-        public async Task ValidateProductNull(Product? product)
+        public void ValidateProductNull(Product? product)
         {
             if (product == null)
             {
@@ -67,7 +67,7 @@ namespace Dsw2025Tpi.Application.Helpers
             }
         }
 
-        public async Task ValidateProductsNull(IEnumerable<Product>? products)
+        public void ValidateProductsNull(IEnumerable<Product>? products)
         {
             if (products == null || !products.Any())
             {
@@ -75,7 +75,7 @@ namespace Dsw2025Tpi.Application.Helpers
                 throw new NoContentException("No hay productos disponibles en la base de datos.");
             }
         }
-        public async Task ValidateDuplicatedProduct(ProductModel.Request request)
+        public async Task ValidateDuplicatedProductAsync(ProductModel.Request request)
         {
             var exist = await _repository.First<Product>(p => p.Sku == request.Sku);
             if (exist != null)
@@ -85,7 +85,7 @@ namespace Dsw2025Tpi.Application.Helpers
             }
         }
 
-        public async Task ValidateDuplicatedProductUpdate(ProductModel.Request request, Guid Id)
+        public async Task ValidateDuplicatedProductUpdateAsync(ProductModel.Request request, Guid Id)
         {
             var exist = await _repository.First<Product>(p =>
             p.Sku == request.Sku && p.Id != Id);

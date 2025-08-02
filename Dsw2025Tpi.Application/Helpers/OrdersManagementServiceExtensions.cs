@@ -45,7 +45,7 @@ namespace Dsw2025Tpi.Application.Helpers
             }
         }
 
-        public async Task ValidateIdCustomer(OrderModel.Request request)
+        public async Task ValidateIdCustomerAsync(OrderModel.Request request)
         {
             if (request.CustomerId == Guid.Empty)
             {
@@ -58,11 +58,11 @@ namespace Dsw2025Tpi.Application.Helpers
             if (existingCustomer == null)
             {
                 _logger.LogWarning("Cliente no encontrado con ID: {CustomerId}", request.CustomerId);
-                throw new NotFoundException($"No se encontró un cliente con el ID: {request.CustomerId}.");
+                throw new BadRequestException($"No se encontró un cliente con el ID: {request.CustomerId}.");
             }
         }
 
-        public async Task<IEnumerable<Product>> ValidateProductsInList(OrderModel.Request request)
+        public async Task<IEnumerable<Product>> ValidateProductsInListAsync(OrderModel.Request request)
         {
             var productIds = request.OrderItems.Select(i => i.ProductId).Distinct().ToList();
             var productsList = await _repository.GetFiltered<Product>(p => productIds.Contains(p.Id));
@@ -108,6 +108,25 @@ namespace Dsw2025Tpi.Application.Helpers
                 _logger.LogWarning("Ya existen órdenes con direcciones iguales.");
                 throw new BadRequestException("Las direcciones de envío o facturación ya existen en otras órdenes.");
             }
+        }
+
+        public async Task ValidateStockAvailabilityAsync(OrderModel.Request request)
+        {
+            foreach (var item in request.OrderItems)
+            {
+                var product = await _repository.GetById<Product>(item.ProductId);
+
+                if (item.Quantity > product.StockQuantity)
+                {
+                    _logger.LogWarning("Stock insuficiente para el producto {ProductId}. Solicitado: {Requested}, Disponible: {Available}",
+                        item.ProductId, item.Quantity, product.StockQuantity);
+
+                    throw new BadRequestException($"El producto '{product.Name}' no tiene stock suficiente. " +
+                        $"Solicitado: {item.Quantity}, Disponible: {product.StockQuantity}.");
+                }
+            }
+
+            _logger.LogInformation("Validación de stock superada correctamente para la orden del cliente {CustomerId}", request.CustomerId);
         }
 
     }

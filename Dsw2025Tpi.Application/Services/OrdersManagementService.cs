@@ -35,7 +35,7 @@ namespace Dsw2025Tpi.Application.Services
         // Crea una nueva orden con los productos y datos del cliente
         public async Task<OrderModel.Response> AddOrder(OrderModel.Request request)
         {
-            await _extensions.ValidateIdCustomer(request);
+            await _extensions.ValidateIdCustomerAsync(request);
 
             _logger.LogInformation("Iniciando creación de orden para cliente {CustomerId}", request.CustomerId);
 
@@ -45,8 +45,10 @@ namespace Dsw2025Tpi.Application.Services
 
              _extensions.ValidateEmptyProducts(request);
 
+            await _extensions.ValidateStockAvailabilityAsync(request);
+
             // Obtiene y valida los productos del pedido
-            var productsList = await _extensions.ValidateProductsInList(request);
+            var productsList = await _extensions.ValidateProductsInListAsync(request);
             var products = productsList.ToDictionary(p => p.Id);
 
             // Crea los ítems de la orden
