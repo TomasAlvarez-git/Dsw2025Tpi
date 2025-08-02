@@ -81,7 +81,7 @@ namespace Dsw2025Tpi.Application.Helpers
             if (exist != null)
             {
                 _logger.LogWarning("Intento de duplicación de producto con SKU existente: {Sku}", request.Sku);
-                throw new DuplicatedEntityException($"Ya existe un producto con el Sku {request.Sku}");
+                throw new BadRequestException($"Ya existe un producto con el Sku {request.Sku}");
             }
         }
 
@@ -93,7 +93,7 @@ namespace Dsw2025Tpi.Application.Helpers
             if (exist != null)
             {
                 _logger.LogWarning("Intento de duplicación de producto con SKU existente: {Sku}", request.Sku);
-                throw new DuplicatedEntityException($"Ya existe un producto con el Sku {request.Sku}");
+                throw new BadRequestException($"Ya existe un producto con el Sku {request.Sku}");
             }
         }
     }

@@ -97,18 +97,18 @@ namespace Dsw2025Tpi.Application.Helpers
             }
         }
 
-        public async Task ValidateAddressesDoNotExistAsync(OrderModel.Request request)
-        {
-            var matchingOrders = await _repository.GetFiltered<Order>(o =>
-                o.ShippingAddress.ToLower().Trim() == request.ShippingAddress.ToLower().Trim() ||
-                o.BillingAddress.ToLower().Trim() == request.BillingAddress.ToLower().Trim());
+        //public async Task ValidateAddressesDoNotExistAsync(OrderModel.Request request)
+        //{
+        //    var matchingOrders = await _repository.GetFiltered<Order>(o =>
+        //        o.ShippingAddress.ToLower().Trim() == request.ShippingAddress.ToLower().Trim() ||
+        //        o.BillingAddress.ToLower().Trim() == request.BillingAddress.ToLower().Trim());
 
-            if (matchingOrders?.Any() == true)
-            {
-                _logger.LogWarning("Ya existen órdenes con direcciones iguales.");
-                throw new BadRequestException("Las direcciones de envío o facturación ya existen en otras órdenes.");
-            }
-        }
+        //    if (matchingOrders?.Any() == true)
+        //    {
+        //        _logger.LogWarning("Ya existen órdenes con direcciones iguales.");
+        //        throw new BadRequestException("Las direcciones de envío o facturación ya existen en otras órdenes.");
+        //    }
+        //}
 
         public async Task ValidateStockAvailabilityAsync(OrderModel.Request request)
         {
