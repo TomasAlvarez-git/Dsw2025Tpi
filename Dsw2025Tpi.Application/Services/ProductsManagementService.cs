@@ -33,7 +33,7 @@ namespace Dsw2025Tpi.Application.Services
             _logger.LogInformation("Iniciando creación de producto con SKU: {Sku}", request.Sku);
 
             // Validación del request
-            await _extensions.ValidateProductRequest(request);
+             _extensions.ValidateProductRequest(request);
 
             // Verifica duplicados
             await _extensions.ValidateDuplicatedProductAsync(request);
@@ -81,7 +81,7 @@ namespace Dsw2025Tpi.Application.Services
         {
             _logger.LogInformation("Actualizando producto con ID: {Id}", Id);
 
-            await _extensions.ValidateProductRequest(request);
+             _extensions.ValidateProductRequest(request);
 
             var product = await _repository.GetById<Product>(Id);
             _extensions.ValidateProductNull(product);

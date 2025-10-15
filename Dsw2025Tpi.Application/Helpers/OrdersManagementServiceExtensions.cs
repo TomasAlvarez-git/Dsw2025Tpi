@@ -116,6 +116,10 @@ namespace Dsw2025Tpi.Application.Helpers
             {
                 var product = await _repository.GetById<Product>(item.ProductId);
 
+                if (product == null) {
+                    throw new BadRequestException($"El producto con ID '{item.ProductId}' no existe.");
+                }
+
                 if (item.Quantity > product.StockQuantity)
                 {
                     _logger.LogWarning("Stock insuficiente para el producto {ProductId}. Solicitado: {Requested}, Disponible: {Available}",

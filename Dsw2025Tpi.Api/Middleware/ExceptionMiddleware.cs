@@ -48,7 +48,7 @@ namespace Dsw2025Tpi.Api.Middleware
                 object response;
                 if (_env.IsDevelopment())
                 {
-                    response = (new {message = ex.Message});
+                    response = (new {message = ex.Message}); // Aqui va el new ApiError()
                 }
                 else
                 {

@@ -23,7 +23,7 @@ namespace Dsw2025Tpi.Application.Helpers
             _repository = repository;
             _logger = logger;
         }
-        public async Task ValidateProductRequest(ProductModel.Request request)
+        public void ValidateProductRequest(ProductModel.Request request)
         {
             if (string.IsNullOrWhiteSpace(request.Sku) ||
                 string.IsNullOrWhiteSpace(request.Name)
